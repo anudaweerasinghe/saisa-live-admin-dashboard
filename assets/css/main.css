@@ -8,7 +8,14 @@ body{
     background-color: #f7f7f7;
 }
 
+.red{
+    background: lightcoral;
+    opacity: 20%;
+}
 
+.green{
+    background: lightgreen;
+}
 
 .awesomplete [hidden] {
     display: none;

@@ -1,12 +1,21 @@
-var volleyAdminApp = angular.module('volleyAdminApp', ['ui.router', 'ngCookies']);
+var saisaLiveAdminApp = angular.module('saisaLiveAdminApp', ['ui.router', 'ngCookies']);
 
 
-volleyAdminApp.config(function ($stateProvider, $urlRouterProvider) {
+saisaLiveAdminApp.config(function ($stateProvider, $urlRouterProvider) {
 
 
-    $urlRouterProvider.otherwise('/login');
+    $urlRouterProvider.otherwise('/tournament-home');
 
     $stateProvider
+
+        .state('tournament', {
+            url: '/tournament-home?id',
+            params:{id:null},
+            templateUrl: 'tournament.html',
+            controller: 'tournamentHomeController',
+            // resolve: {authenticate: authenticate}
+
+        })
 
         .state('login', {
             url: '/login',
@@ -17,27 +26,20 @@ volleyAdminApp.config(function ($stateProvider, $urlRouterProvider) {
         .state('score', {
             url: '/score',
             templateUrl: 'score.html',
-            controller: 'scoreController',
-            resolve: {authenticate: authenticate}
+            controller: 'scoreController'
         })
 
         .state('createGallery', {
             url: '/create-gallery',
             templateUrl: 'create-gallery.html',
             controller: 'createGalleryController',
-            resolve: {authenticate: authenticate}
+            // resolve: {authenticate: authenticate}
         })
 
-        .state('home', {
-            url: '/home',
-            templateUrl: 'home.html',
-            controller: 'homeController',
-            resolve: {authenticate: authenticate}
 
-        })
 });
 
-function authenticate($q, $http, $state, $timeout, $cookies) {
+function authenticate($q, $http, $state, $timeout, $cookies, $stateParams) {
     var uname = $cookies.get("uname");
     var password = $cookies.get("password");
 
@@ -78,20 +80,18 @@ function authenticate($q, $http, $state, $timeout, $cookies) {
 }
 
 
-volleyAdminApp.controller('homeController', function ($scope, $http, $state, $cookies) {
+saisaLiveAdminApp.controller('tournamentHomeController', function ($scope, $http, $state, $cookies, $stateParams) {
 
-    var uname = $cookies.get('uname');
-    $scope.gameId = $cookies.get('gameId');
-
-    if($scope.gameId!=='0') {
-        $state.go('score');
-    }
+    var tournamentId = $stateParams.id;
 
     $http({
         method: 'GET',
-        url: 'http://128.199.178.5:8080/saisa-volleyball/get/fixtures/'
+        url: 'http://localhost:8080/tournaments/participants/?tournamentId='+tournamentId
     }).then(function successCallback(response) {
-        $scope.fixtures = response.data;
+        $scope.tournamentData = response.data;
+        console.log($scope.tournamentData);
+
+        $scope.pools = $scope.tournamentData.pools;
 
 
     }, function errorCallback(response) {
@@ -101,43 +101,49 @@ volleyAdminApp.controller('homeController', function ($scope, $http, $state, $co
 
     });
 
-    $scope.startScoring = function () {
-
-        var uname = $cookies.get('uname');
+    $scope.applyChanges = function(participantId, pool){
 
         $http({
-            method: 'GET',
-            url: 'http://128.199.178.5:8080/saisa-volleyball/update/create-session/?gameId='+$scope.game+'&uname='+uname
+            method: 'POST',
+            url: 'http://localhost:8080/tournaments/participant/edit?participantId='+$scope.tournamentData.pools[pool].participants[participantId].id,
+            data: {
+                "active": $scope.tournamentData.pools[pool].participants[participantId].active,
+                "games": $scope.tournamentData.pools[pool].participants[participantId].games,
+                "losses": $scope.tournamentData.pools[pool].participants[participantId].losses,
+                "points": $scope.tournamentData.pools[pool].participants[participantId].points,
+                "standing": $scope.tournamentData.pools[pool].participants[participantId].standing,
+                "ties": $scope.tournamentData.pools[pool].participants[participantId].ties,
+                "wins": $scope.tournamentData.pools[pool].participants[participantId].wins
+            }
         }).then(function successCallback(response) {
-            $cookies.put('gameId', $scope.game);
-            $scope.fixtures = response.data;
-            $state.go('score');
+            alert('Databases Successfully Updated');
+
         }, function errorCallback(response) {
             // The next bit of code is asynchronously tricky.
-            alert("We encountered an error while starting the scoring session. Ask Anuda for help.");
+            alert("We encountered an error while applying the changes");
             console.log(response)
-
         });
 
-    };
 
-    $scope.logout = function () {
+    }
 
-        $cookies.remove("uname");
-        $cookies.remove("password");
-        $cookies.remove("gameId");
-        $state.go('login')
-
-    };
-    $scope.createGallery = function () {
-
-        $state.go('createGallery')
-
-    };
+    // $scope.logout = function () {
+    //
+    //     $cookies.remove("uname");
+    //     $cookies.remove("password");
+    //     $cookies.remove("gameId");
+    //     $state.go('login')
+    //
+    // };
+    // $scope.createGallery = function () {
+    //
+    //     $state.go('createGallery')
+    //
+    // };
 
 });
 
-volleyAdminApp.controller('createGalleryController', function ($scope, $http, $state, $cookies) {
+saisaLiveAdminApp.controller('createGalleryController', function ($scope, $http, $state, $cookies) {
 
     $scope.createGallery = function () {
         $http({
@@ -177,7 +183,7 @@ volleyAdminApp.controller('createGalleryController', function ($scope, $http, $s
         };
 });
 
-volleyAdminApp.controller('scoreController', function ($scope, $http, $state, $cookies) {
+saisaLiveAdminApp.controller('scoreController', function ($scope, $http, $state, $cookies) {
 
 
     $scope.gameId = $cookies.get('gameId');
@@ -270,7 +276,7 @@ volleyAdminApp.controller('scoreController', function ($scope, $http, $state, $c
 });
 
 
-volleyAdminApp.controller('loginController', function ($scope, $http, $cookies, $state) {
+saisaLiveAdminApp.controller('loginController', function ($scope, $http, $cookies, $state) {
 
 
     $scope.login = function () {

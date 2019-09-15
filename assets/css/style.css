@@ -32,6 +32,14 @@ form {
 	margin-bottom: 45px; 
 }
 
+.red{
+	background: rgba(240,128,128,0.65);
+}
+
+.green{
+	background: rgba(144,238,144,0.65);
+}
+
 input {
 	font-size: 18px;
 	padding: 10px 10px 10px 5px;
