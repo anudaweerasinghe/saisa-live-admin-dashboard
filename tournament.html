@@ -16,7 +16,7 @@
 
     <div align="left">
         <button style="font-size: large; display: inline-block; margin-right: 85%" ng-click="logout()">Logout</button>
-        <button style="font-size: large; display: inline-block;" ng-click="createGallery()">Edit Tournament</button>
+        <button style="font-size: large; display: inline-block;" ng-click="editTournament()">Edit Tournament</button>
 
     </div>
     <h1>Admin Dashboard Home</h1>
@@ -64,9 +64,9 @@
             <th style="font-size: 20pt">Active Status</th>
 
             <th align="center">
-                <div class="col-md-8">
+                <div>
                     <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
-                            ng-click="startScoring()">Add Team +
+                            ng-click="addTeam($index)">Add Team +
                         <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
                     </button>
                 </div>
@@ -84,17 +84,9 @@
                 <td align="center"><input type="text" ng-model = "items.standing" value="{{items.standing}}"></td>
                 <td align="center"><input style="transform: scale(1)" type="checkbox" ng-model = "items.active" value="{{items.active}}"></td>
                 <td align="center">
-                    <div class="col-md-6">
+                    <div>
                         <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
                                 ng-click="applyChanges($index, $parent.$index)">Apply Changes
-                            <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
-                        </button>
-                    </div>
-
-
-                    <div class="col-md-6">
-                        <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
-                                ng-click="startScoring()">Edit Team
                             <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
                         </button>
                     </div>

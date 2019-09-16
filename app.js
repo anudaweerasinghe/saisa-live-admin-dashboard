@@ -17,6 +17,21 @@ saisaLiveAdminApp.config(function ($stateProvider, $urlRouterProvider) {
 
         })
 
+        .state('editParticipant', {
+            url: '/edit-participant?pool',
+            params:{pool:null},
+            templateUrl: 'participant.html',
+            controller: 'editParticipantController',
+            // resolve: {authenticate: authenticate}
+        })
+
+        .state('editTournament', {
+            url: '/edit-tournament',
+            templateUrl: 'edit-tournament.html',
+            controller: 'editTournamentController',
+            // resolve: {authenticate: authenticate}
+        })
+
         .state('login', {
             url: '/login',
             templateUrl: 'login.html',
@@ -29,12 +44,7 @@ saisaLiveAdminApp.config(function ($stateProvider, $urlRouterProvider) {
             controller: 'scoreController'
         })
 
-        .state('createGallery', {
-            url: '/create-gallery',
-            templateUrl: 'create-gallery.html',
-            controller: 'createGalleryController',
-            // resolve: {authenticate: authenticate}
-        })
+
 
 
 });
@@ -125,6 +135,13 @@ saisaLiveAdminApp.controller('tournamentHomeController', function ($scope, $http
         });
 
 
+    };
+
+    $scope.addTeam = function(pool1){
+
+
+        window.location.href = 'http://localhost/admin-saisa-live/#!/edit-participant?pool='+$scope.tournamentData.pools[pool1].pool;
+
     }
 
     // $scope.logout = function () {
@@ -135,28 +152,69 @@ saisaLiveAdminApp.controller('tournamentHomeController', function ($scope, $http
     //     $state.go('login')
     //
     // };
-    // $scope.createGallery = function () {
-    //
-    //     $state.go('createGallery')
-    //
-    // };
+    $scope.editTournament = function () {
+
+        $state.go('editTournament')
+
+    };
 
 });
 
-saisaLiveAdminApp.controller('createGalleryController', function ($scope, $http, $state, $cookies) {
+saisaLiveAdminApp.controller('editParticipantController', function ($scope, $http, $state, $cookies, $stateParams) {
 
-    $scope.createGallery = function () {
+    var tournamentId = 1;
+
+    if($stateParams.pool!=null){
+        $scope.poolNumber = $stateParams.pool;
+    }
+
+    $http({
+        method: 'GET',
+        url: 'http://localhost:8080/tournaments/participants/?tournamentId='+tournamentId
+    }).then(function successCallback(response) {
+        $scope.tournamentData = response.data;
+
+    }, function errorCallback(response) {
+        // The next bit of code is asynchronously tricky.
+        alert("We encountered an error while retrieving your data");
+        console.log(response)
+
+    });
+
+    $http({
+        method: 'GET',
+        url: 'http://localhost:8080/teams?teamId=0'
+    }).then(function successCallback(response) {
+        $scope.teams = response.data;
+
+    }, function errorCallback(response) {
+        // The next bit of code is asynchronously tricky.
+        alert("We encountered an error while retrieving the teams data");
+        console.log(response)
+
+    });
+
+
+
+    $scope.addParticipant = function () {
         $http({
             method: 'POST',
-            url: 'http://128.199.178.5:8080/saisa-volleyball/update/new-pics',
+            url: 'http://localhost:8080/tournaments/participant/new',
             data: {
-                "galleryName": $scope.name,
-                "thumbnailUrl": $scope.thumbnail,
-                "url": $scope.url
+                "games": 0,
+                "losses": 0,
+                "points": 0,
+                "pool": parseInt($scope.poolNumber),
+                "standing": 0,
+                "teamId": parseInt($scope.team),
+                "teamPhoto": $scope.teamphoto,
+                "ties": 0,
+                "tournamentId": tournamentId,
+                "wins": 0
             }
         }).then(function successCallback(response) {
             alert('Databases Successfully Updated');
-            window.location.replace("http://osc.lk/saisa/#!/gallery");
+            window.location.replace("http://localhost/admin-saisa-live/#!/tournament-home?id="+tournamentId);
 
 
         }, function errorCallback(response) {
@@ -167,20 +225,87 @@ saisaLiveAdminApp.controller('createGalleryController', function ($scope, $http,
     };
 
 
-        $scope.logout = function () {
-
-            $cookies.remove("uname");
-            $cookies.remove("password");
-            $cookies.remove("gameId");
-
-            $state.go('login');
-
-        };
+        // $scope.logout = function () {
+        //
+        //     $cookies.remove("uname");
+        //     $cookies.remove("password");
+        //     $cookies.remove("gameId");
+        //
+        //     $state.go('login');
+        //
+        // };
         $scope.home = function () {
 
-            $state.go('home')
+            window.location.replace("http://localhost/admin-saisa-live/#!/tournament-home?id="+tournamentId);
 
         };
+});
+
+saisaLiveAdminApp.controller('editTournamentController', function ($scope, $http, $state, $cookies) {
+
+    var tournamentId = 1;
+
+    $http({
+        method: 'GET',
+        url: 'http://localhost:8080/tournaments?tournamentId='+tournamentId
+    }).then(function successCallback(response) {
+        $scope.tournamentData = response.data;
+
+    }, function errorCallback(response) {
+        // The next bit of code is asynchronously tricky.
+        alert("We encountered an error while retrieving your data");
+        console.log(response)
+
+    });
+
+    $http({
+        method: 'GET',
+        url: 'http://localhost:8080/sports?sportId=0'
+    }).then(function successCallback(response) {
+        $scope.sportData = response.data;
+        console.log($scope.sportData[$scope.tournamentData.sportId-1].id);
+    }, function errorCallback(response) {
+        // The next bit of code is asynchronously tricky.
+        alert("We encountered an error while retrieving your data");
+        console.log(response)
+
+    });
+
+    $scope.saveTournament = function () {
+        $http({
+            method: 'POST',
+            url: 'http://localhost:8080/tournaments/edit?tournamentId='+tournamentId,
+            data: {
+                "endDate": $scope.tournamentData.endDate,
+                "location": $scope.tournamentData.location,
+                "logo": $scope.tournamentData.logo,
+                "name": $scope.tournamentData.name,
+                "poolQuantity": parseInt($scope.tournamentData.poolQuantity),
+                "poolsActive": $scope.tournamentData.poolsActive,
+                "scoresActive": $scope.tournamentData.scoresActive,
+                "sportId": parseInt($scope.tournamentData.sportId),
+                "standingsActive": $scope.tournamentData.standingsActive,
+                "startDate": $scope.tournamentData.startDate,
+                "url": $scope.tournamentData.url
+            }
+        }).then(function successCallback(response) {
+            alert('Databases Successfully Updated');
+            window.location.replace("http://localhost/admin-saisa-live/#!/tournament-home?id="+tournamentId);
+
+
+        }, function errorCallback(response) {
+            // The next bit of code is asynchronously tricky.
+            alert("We encountered an error while saving your information.");
+            console.log(response)
+        });
+    };
+
+    $scope.home = function () {
+
+        window.location.replace("http://localhost/admin-saisa-live/#!/tournament-home?id="+tournamentId);
+
+    };
+
 });
 
 saisaLiveAdminApp.controller('scoreController', function ($scope, $http, $state, $cookies) {
