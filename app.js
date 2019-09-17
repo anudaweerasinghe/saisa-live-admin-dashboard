@@ -32,6 +32,20 @@ saisaLiveAdminApp.config(function ($stateProvider, $urlRouterProvider) {
             // resolve: {authenticate: authenticate}
         })
 
+        .state('liveStreamHome', {
+            url: '/livestream',
+            templateUrl: 'livestream.html',
+            controller: 'liveStreamHomeController',
+            // resolve: {authenticate: authenticate}
+        })
+
+        .state('addLiveStream', {
+            url: '/add-livestream',
+            templateUrl: 'edit-livestream.html',
+            controller: 'addLiveController',
+            // resolve: {authenticate: authenticate}
+        })
+
         .state('login', {
             url: '/login',
             templateUrl: 'login.html',
@@ -154,7 +168,154 @@ saisaLiveAdminApp.controller('tournamentHomeController', function ($scope, $http
     // };
     $scope.editTournament = function () {
 
-        $state.go('editTournament')
+        $state.go('editTournament');
+
+    };
+
+    $scope.manageLive = function () {
+
+        $state.go('liveStreamHome');
+
+    };
+
+});
+
+saisaLiveAdminApp.controller('liveStreamHomeController', function ($scope, $http, $state, $cookies) {
+
+    var tournamentId = 1;
+
+    $http({
+        method: 'GET',
+        url: 'http://localhost:8080/tournaments?tournamentId='+tournamentId
+    }).then(function successCallback(response) {
+        $scope.tournamentData = response.data;
+        console.log($scope.tournamentData);
+
+
+
+    }, function errorCallback(response) {
+        // The next bit of code is asynchronously tricky.
+        alert("We encountered an error while retrieving your data");
+        console.log(response)
+
+    });
+
+    $http({
+        method: 'GET',
+        url: 'http://localhost:8080/livestreams?tournamentId='+tournamentId
+    }).then(function successCallback(response) {
+        $scope.liveStreamData = response.data;
+        console.log($scope.liveStreamData);
+
+    }, function errorCallback(response) {
+        // The next bit of code is asynchronously tricky.
+        alert("We encountered an error while retrieving your data");
+        console.log(response)
+
+    });
+
+    $scope.applyChanges = function(liveIndex){
+
+        $http({
+            method: 'POST',
+            url: 'http://localhost:8080/livestreams/edit?livestreamId='+$scope.liveStreamData[liveIndex].id,
+            data: {
+                "active": $scope.liveStreamData[liveIndex].active,
+                "description": $scope.liveStreamData[liveIndex].description,
+                "live": $scope.liveStreamData[liveIndex].live,
+                "tournamentId": tournamentId,
+                "url": $scope.liveStreamData[liveIndex].url
+            }
+        }).then(function successCallback(response) {
+            alert('Databases Successfully Updated');
+
+        }, function errorCallback(response) {
+            // The next bit of code is asynchronously tricky.
+            alert("We encountered an error while applying the changes");
+            console.log(response)
+        });
+
+
+    };
+
+    $scope.viewLive = function(liveIndex){
+
+        window.open($scope.liveStreamData[liveIndex].url);
+
+    };
+
+    $scope.addLiveStream = function(liveIndex){
+
+        $state.go('addLiveStream');
+
+
+    };
+
+    $scope.home = function () {
+
+        window.location.replace("http://localhost/admin-saisa-live/#!/tournament-home?id="+tournamentId);
+
+    };
+
+
+
+});
+
+saisaLiveAdminApp.controller('addLiveController', function ($scope, $http, $state, $cookies) {
+
+    var tournamentId = 1;
+
+    $http({
+        method: 'GET',
+        url: 'http://localhost:8080/tournaments?tournamentId='+tournamentId
+    }).then(function successCallback(response) {
+        $scope.tournamentData = response.data;
+        console.log($scope.tournamentData);
+
+
+    }, function errorCallback(response) {
+        // The next bit of code is asynchronously tricky.
+        alert("We encountered an error while retrieving your data");
+        console.log(response)
+
+    });
+
+    $scope.addLive = function () {
+        $http({
+            method: 'POST',
+            url: 'http://localhost:8080/livestreams/new',
+            data: {
+                "active": $scope.activeStatus,
+                "description": $scope.description,
+                "live": $scope.liveStatus,
+                "tournamentId": tournamentId,
+                "url": $scope.url
+            }
+        }).then(function successCallback(response) {
+            alert('Databases Successfully Updated');
+            window.location.replace("http://localhost/admin-saisa-live/#!/livestream");
+
+
+        }, function errorCallback(response) {
+            // The next bit of code is asynchronously tricky.
+            alert("We encountered an error while saving your information.");
+            console.log(response)
+        });
+    };
+
+
+    // $scope.logout = function () {
+    //
+    //     $cookies.remove("uname");
+    //     $cookies.remove("password");
+    //     $cookies.remove("gameId");
+    //
+    //     $state.go('login');
+    //
+    // };
+    $scope.home = function () {
+
+        window.location.replace("http://localhost/admin-saisa-live/#!/tournament-home?id="+tournamentId);
 
     };
 

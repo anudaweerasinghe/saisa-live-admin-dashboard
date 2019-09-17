@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+<script src="assets/js/index.js"></script>
+
+<script src="app.js"></script>
+<link rel="stylesheet" href="assets/css/style.css">
+
+<link rel="shortcut icon" href="assets/favicon.jpg">
+<head>
+    <meta charset="UTF-8">
+    <title>{{tournamentData.name}} - Livestreams</title>
+</head>
+<body>
+<center>
+
+    <div align="left">
+        <button style="font-size: large; display: inline-block; margin-right: 85%" ng-click="logout()">Logout</button>
+        <button style="font-size: large; display: inline-block;" ng-click="home()">Home</button>
+
+    </div>
+    <h1>Livestreams</h1>
+    <h2 style="color: #17376e">{{tournamentData.name}}</h2>
+    <br><br>
+<!--    <div>-->
+<!--        <div class="col-md-4">-->
+<!--            <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"-->
+<!--                    ng-click="startScoring()">Manage Games/Scoring-->
+<!--                <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>-->
+<!--            </button>-->
+<!--        </div>-->
+<!--        <div class="col-md-4">-->
+<!--            <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"-->
+<!--                    ng-click="startScoring()">Manage Livestreams-->
+<!--                <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>-->
+<!--            </button>-->
+<!--        </div>-->
+<!--        <div class="col-md-4">-->
+<!--            <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"-->
+<!--                    ng-click="startScoring()">Manage Media-->
+<!--                <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>-->
+<!--            </button>-->
+<!--        </div>-->
+<!--    </div>-->
+
+    <br><br>
+    <div>
+
+        <table style="width: 100%">
+            <th style="font-size: 20pt">Description</th>
+            <th style="font-size: 20pt">URL</th>
+
+            <th style="font-size: 20pt">Active Status</th>
+
+            <th style="font-size: 20pt">Live Status</th>
+            <th style="font-size: 20pt"></th>
+
+            <th align="center">
+                <div>
+                    <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
+                            ng-click="addLiveStream()">Add Livestream +
+                        <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
+                    </button>
+                </div>
+
+            </th>
+
+
+            <tr ng-repeat="items in liveStreamData" ng-class='{red : !items.active, green: items.active}'>
+                <td align="center"><input type="text"  ng-model = "items.description" value="{{items.description}}"> </td>
+                <td align="center"><input type="text" ng-model = "items.url" value="{{items.url}}"></td>
+                <td align="center"><input style="transform: scale(1)" type="checkbox" ng-model = "items.active" value="{{items.active}}"></td>
+                <td align="center"><input style="transform: scale(1)" type="checkbox" ng-model = "items.live" value="{{items.live}}"></td>
+
+                <td align="center">
+                    <div>
+                        <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
+                                ng-click="viewLive($index)">View Livestream
+                            <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
+                        </button>
+                    </div>
+                </td>
+                <td align="center">
+                    <div>
+                        <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
+                                ng-click="applyChanges($index)">Apply Changes
+                            <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+
+
+        </table>
+    </div>
+</center>
+</body>
+</html>
