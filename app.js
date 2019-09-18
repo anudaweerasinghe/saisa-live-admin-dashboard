@@ -52,7 +52,7 @@ saisaLiveAdminApp.config(function ($stateProvider, $urlRouterProvider) {
             controller: 'mediaHomeController',
             // resolve: {authenticate: authenticate}
         })
-        
+
 
         .state('login', {
             url: '/login',
