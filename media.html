@@ -66,7 +66,7 @@
             <th align="center">
                 <div>
                     <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
-                            ng-click="addLiveStream()">Add Photos +
+                            ng-click="addMedia(1)">Add Photos +
                         <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
                     </button>
                 </div>
@@ -145,7 +145,7 @@
             <th align="center">
                 <div>
                     <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
-                            ng-click="addLiveStream()">Add Videos +
+                            ng-click="addMedia(2)">Add Videos +
                         <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
                     </button>
                 </div>
@@ -211,7 +211,6 @@
         <table style="width: 100%">
             <th style="font-size: 20pt">Title</th>
             <th style="font-size: 20pt">Cover Image URL</th>
-            <th style="font-size: 20pt">URL</th>
 
             <th style="font-size: 20pt">Active Status</th>
 
@@ -224,7 +223,7 @@
             <th align="center">
                 <div>
                     <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
-                            ng-click="addLiveStream()">Add News +
+                            ng-click="addMedia(3)">Add News +
                         <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
                     </button>
                 </div>
@@ -234,11 +233,10 @@
             <tr ng-repeat="items in news" ng-class='{red : !items.active, green: items.active}'>
                 <td align="center"><input type="text"  ng-model = "items.title" value="{{items.title}}"> </td>
                 <td align="center"><input type="text" ng-model = "items.coverImg" value="{{items.coverImg}}"></td>
-                <td align="center"><input type="text" ng-model = "items.contentUrl" value="{{items.contentUrl}}"></td>
                 <td align="center"><input style="transform: scale(1)" type="checkbox" ng-model = "items.active" value="{{items.active}}"></td>
                 <td align="center">{{items.timestamp}}</td>
                 <td align="center">
-                    <select ng-model="items.type" style="background: white; font-size: 16pt; width: 80%;">
+                    <select ng-model="items.type" style="background: white; font-size: 16pt; width: 80%;" >
                         <option value="1">Photos</option>
                         <option value="2">Videos</option>
                         <option value="3">News/Blog</option>

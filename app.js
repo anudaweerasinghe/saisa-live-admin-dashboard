@@ -53,6 +53,14 @@ saisaLiveAdminApp.config(function ($stateProvider, $urlRouterProvider) {
             // resolve: {authenticate: authenticate}
         })
 
+        .state('editMedia', {
+            url: '/edit-media?id&mediaType',
+            params:{id:null, mediaType:null},
+            templateUrl: 'edit-media.html',
+            controller: 'editMediaController',
+            // resolve: {authenticate: authenticate}
+        })
+
 
         .state('login', {
             url: '/login',
@@ -459,12 +467,154 @@ saisaLiveAdminApp.controller('mediaHomeController', function ($scope, $http, $st
         }else if(type == 2){
             window.open($scope.videos[contentIndex].contentUrl);
 
-        }else{
+        }else if(type==3){
+            window.replace("http://localhost/admin-saisa-live/#!/edit-media?id="+$scope.news[contentIndex].id);
 
         }
     };
 
+    $scope.addMedia = function(type){
+        window.location.replace("http://localhost/admin-saisa-live/#!/edit-media?mediaType="+type);
+    };
 
+
+    $scope.home = function () {
+
+        window.location.replace("http://localhost/admin-saisa-live/#!/tournament-home?id="+tournamentId);
+
+    };
+
+
+});
+
+saisaLiveAdminApp.controller('editMediaController', function ($scope, $http, $state, $cookies, $stateParams) {
+
+    var tournamentId = 1;
+
+    $scope.isNews = false;
+    $scope.typeSelected=false;
+
+    $scope.newMedia = true;
+    $scope.editMedia = false;
+
+    console.log($stateParams.mediaType);
+
+    if($stateParams.id!=null){
+        $scope.editMedia = true;
+        $scope.newMedia = false;
+
+        $scope.typeSelected=true;
+        $http({
+            method: 'GET',
+            url: 'http://localhost:8080/media?mediaId='+$stateParams.id+'&tournamentId=0&type=0'
+        }).then(function successCallback(response) {
+            $scope.mediaData = response.data;
+
+            $scope.mType = $scope.mediaData.type.toString();
+            $scope.title = $scope.mediaData.title;
+            $scope.coverImg = $scope.mediaData.coverImg;
+            $scope.active = $scope.mediaData.active;
+            $scope.contentUrl = $scope.mediaData.contentUrl;
+            $scope.text = $scope.mediaData.text;
+
+            if($scope.mediaData.type===3){
+                $scope.isNews = true;
+            }
+
+        }, function errorCallback(response) {
+            // The next bit of code is asynchronously tricky.
+            alert("We encountered an error while retrieving your data");
+            console.log(response)
+
+        });
+
+    }
+    if($stateParams.mediaType!=null) {
+        $scope.typeSelected = true;
+        $scope.mType=$stateParams.mediaType;
+        if ($stateParams.mediaType === "3") {
+            $scope.isNews = true;
+            console.log($scope.isNews);
+        }
+    }
+
+    $scope.selectMedia = function(){
+
+        $scope.typeSelected=true;
+        if($scope.mType==="3"){
+            $scope.isNews = true;
+        }
+
+    };
+
+    $scope.saveMedia = function () {
+        if($scope.editMedia){
+            $http({
+                method: 'POST',
+                url: 'http://localhost:8080/media/edit?mediaId='+$stateParams.id,
+                data: {
+                    "active": $scope.active,
+                    "contentUrl": $scope.contentUrl,
+                    "coverImg": $scope.coverImg,
+                    "text": $scope.text,
+                    "title": $scope.title,
+                    "tournamentId": tournamentId,
+                    "type": parseInt($scope.mType)
+                }
+            }).then(function successCallback(response) {
+                alert('Databases Successfully Updated');
+                window.location.replace("http://localhost/admin-saisa-live/#!/media");
+
+
+            }, function errorCallback(response) {
+                // The next bit of code is asynchronously tricky.
+                alert("We encountered an error while saving your information.");
+                console.log(response)
+            });
+        }
+
+        if($scope.newMedia){
+            $http({
+                method: 'POST',
+                url: 'http://localhost:8080/media/new',
+                data: {
+                    "active": $scope.active,
+                    "contentUrl": $scope.contentUrl,
+                    "coverImg": $scope.coverImg,
+                    "text": $scope.text,
+                    "title": $scope.title,
+                    "tournamentId": tournamentId,
+                    "type": parseInt($scope.mType)
+                }
+            }).then(function successCallback(response) {
+                alert('Databases Successfully Updated');
+                window.location.replace("http://localhost/admin-saisa-live/#!/media");
+
+
+            }, function errorCallback(response) {
+                // The next bit of code is asynchronously tricky.
+                alert("We encountered an error while saving your information.");
+                console.log(response)
+            });
+        }
+
+    };
+
+
+    $http({
+        method: 'GET',
+        url: 'http://localhost:8080/tournaments?tournamentId='+tournamentId
+    }).then(function successCallback(response) {
+        $scope.tournamentData = response.data;
+        console.log($scope.tournamentData);
+
+
+    }, function errorCallback(response) {
+        // The next bit of code is asynchronously tricky.
+        alert("We encountered an error while retrieving your data");
+        console.log(response)
+
+    });
 
     $scope.home = function () {
 
