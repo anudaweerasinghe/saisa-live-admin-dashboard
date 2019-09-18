@@ -46,6 +46,14 @@ saisaLiveAdminApp.config(function ($stateProvider, $urlRouterProvider) {
             // resolve: {authenticate: authenticate}
         })
 
+        .state('mediaHome', {
+            url: '/media',
+            templateUrl: 'media.html',
+            controller: 'mediaHomeController',
+            // resolve: {authenticate: authenticate}
+        })
+        
+
         .state('login', {
             url: '/login',
             templateUrl: 'login.html',
@@ -178,6 +186,12 @@ saisaLiveAdminApp.controller('tournamentHomeController', function ($scope, $http
 
     };
 
+    $scope.media = function () {
+
+        $state.go('mediaHome');
+
+    };
+
 });
 
 saisaLiveAdminApp.controller('liveStreamHomeController', function ($scope, $http, $state, $cookies) {
@@ -257,6 +271,206 @@ saisaLiveAdminApp.controller('liveStreamHomeController', function ($scope, $http
 
     };
 
+
+
+});
+
+saisaLiveAdminApp.controller('mediaHomeController', function ($scope, $http, $state, $cookies) {
+
+    $scope.newsText = false;
+
+    var tournamentId = 1;
+
+    $http({
+        method: 'GET',
+        url: 'http://localhost:8080/tournaments?tournamentId=' + tournamentId
+    }).then(function successCallback(response) {
+        $scope.tournamentData = response.data;
+        console.log($scope.tournamentData);
+
+
+    }, function errorCallback(response) {
+        // The next bit of code is asynchronously tricky.
+        alert("We encountered an error while retrieving your data");
+        console.log(response)
+
+    });
+
+    $http({
+        method: 'GET',
+        url: 'http://localhost:8080/media?tournamentId='+tournamentId+'&type='+1
+    }).then(function successCallback(response) {
+        $scope.photos = response.data;
+
+        var ts = new Date;
+
+
+        for(var i=0; i<$scope.photos.length;i++){
+
+            let ts = new Date($scope.photos[i].timestamp*1000);
+            console.log(ts);
+            console.log(ts.toDateString());
+            $scope.photos[i].timestamp = ts.toDateString();
+        }
+
+    }, function errorCallback(response) {
+        // The next bit of code is asynchronously tricky.
+        alert("We encountered an error while retrieving your data");
+        console.log(response)
+    });
+
+    $http({
+        method: 'GET',
+        url: 'http://localhost:8080/media?tournamentId='+tournamentId+'&type='+2
+    }).then(function successCallback(response) {
+        $scope.videos = response.data;
+
+        var ts = new Date;
+
+
+        for(var i=0; i<$scope.videos.length;i++){
+
+            let ts = new Date($scope.videos[i].timestamp*1000);
+            console.log(ts);
+            console.log(ts.toDateString());
+            $scope.videos[i].timestamp = ts.toDateString();
+        }
+    }, function errorCallback(response) {
+        // The next bit of code is asynchronously tricky.
+        alert("We encountered an error while retrieving your data");
+        console.log(response)
+    });
+
+    $http({
+        method: 'GET',
+        url: 'http://localhost:8080/media?tournamentId='+tournamentId+'&type='+3
+    }).then(function successCallback(response) {
+        $scope.news = response.data;
+
+        var ts = new Date;
+
+
+        for(var i=0; i<$scope.news.length;i++){
+
+            let ts = new Date($scope.news[i].timestamp*1000);
+            console.log(ts);
+            console.log(ts.toDateString());
+            $scope.news[i].timestamp = ts.toDateString();
+        }
+    }, function errorCallback(response) {
+        // The next bit of code is asynchronously tricky.
+        alert("We encountered an error while retrieving your data");
+        console.log(response)
+    });
+
+    $scope.applyPhotoChanges = function(photoIndex){
+
+        $http({
+            method: 'POST',
+            url: 'http://localhost:8080/media/edit?mediaId='+$scope.photos[photoIndex].id,
+            data: {
+                "active": $scope.photos[photoIndex].active,
+                "contentUrl": $scope.photos[photoIndex].contentUrl,
+                "coverImg": $scope.photos[photoIndex].coverImg,
+                "text": $scope.photos[photoIndex].text,
+                "title": $scope.photos[photoIndex].title,
+                "tournamentId": tournamentId,
+                "type": $scope.photos[photoIndex].type
+            }
+        }).then(function successCallback(response) {
+            alert('Databases Successfully Updated');
+
+            window.location.reload();
+        }, function errorCallback(response) {
+            // The next bit of code is asynchronously tricky.
+            alert("We encountered an error while applying the changes");
+            console.log(response)
+        });
+    };
+
+    $scope.applyVideoChanges = function(videoIndex){
+
+        $http({
+            method: 'POST',
+            url: 'http://localhost:8080/media/edit?mediaId='+$scope.videos[videoIndex].id,
+            data: {
+                "active": $scope.videos[videoIndex].active,
+                "contentUrl": $scope.videos[videoIndex].contentUrl,
+                "coverImg": $scope.videos[videoIndex].coverImg,
+                "text": $scope.videos[videoIndex].text,
+                "title": $scope.videos[videoIndex].title,
+                "tournamentId": tournamentId,
+                "type": $scope.videos[videoIndex].type
+            }
+        }).then(function successCallback(response) {
+            alert('Databases Successfully Updated');
+
+            window.location.reload();
+        }, function errorCallback(response) {
+            // The next bit of code is asynchronously tricky.
+            alert("We encountered an error while applying the changes");
+            console.log(response)
+        });
+    };
+
+    $scope.applyNewsChanges = function(newsIndex){
+
+        $http({
+            method: 'POST',
+            url: 'http://localhost:8080/media/edit?mediaId='+$scope.news[newsIndex].id,
+            data: {
+                "active": $scope.news[newsIndex].active,
+                "contentUrl": $scope.news[newsIndex].contentUrl,
+                "coverImg": $scope.news[newsIndex].coverImg,
+                "text": $scope.news[newsIndex].text,
+                "title": $scope.news[newsIndex].title,
+                "tournamentId": tournamentId,
+                "type": $scope.news[newsIndex].type
+            }
+        }).then(function successCallback(response) {
+            alert('Databases Successfully Updated');
+
+            window.location.reload();
+        }, function errorCallback(response) {
+            // The next bit of code is asynchronously tricky.
+            alert("We encountered an error while applying the changes");
+            console.log(response)
+        });
+    };
+
+
+
+    $scope.viewCover = function(type, contentIndex){
+
+        if(type ==1) {
+            window.open($scope.photos[contentIndex].coverImg);
+        }else if(type ==2){
+            window.open($scope.videos[contentIndex].coverImg);
+
+        }else{
+            window.open($scope.news[contentIndex].coverImg);
+        }
+    };
+
+    $scope.viewMedia = function(type, contentIndex){
+
+        if(type ==1) {
+            window.open($scope.photos[contentIndex].contentUrl);
+        }else if(type == 2){
+            window.open($scope.videos[contentIndex].contentUrl);
+
+        }else{
+
+        }
+    };
+
+
+
+    $scope.home = function () {
+
+        window.location.replace("http://localhost/admin-saisa-live/#!/tournament-home?id="+tournamentId);
+
+    };
 
 
 });
