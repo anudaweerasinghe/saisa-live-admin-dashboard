@@ -61,6 +61,15 @@ saisaLiveAdminApp.config(function ($stateProvider, $urlRouterProvider) {
             // resolve: {authenticate: authenticate}
         })
 
+        .state('gamesHome', {
+            url: '/games',
+            templateUrl: 'games.html',
+            controller: 'gamesHomeController',
+            // resolve: {authenticate: authenticate}
+        })
+
+
+
 
         .state('login', {
             url: '/login',
@@ -197,6 +206,12 @@ saisaLiveAdminApp.controller('tournamentHomeController', function ($scope, $http
     $scope.media = function () {
 
         $state.go('mediaHome');
+
+    };
+
+    $scope.games = function () {
+
+        $state.go('gamesHome');
 
     };
 
@@ -477,6 +492,155 @@ saisaLiveAdminApp.controller('mediaHomeController', function ($scope, $http, $st
         window.location.replace("http://localhost/admin-saisa-live/#!/edit-media?mediaType="+type);
     };
 
+
+    $scope.home = function () {
+
+        window.location.replace("http://localhost/admin-saisa-live/#!/tournament-home?id="+tournamentId);
+
+    };
+
+
+});
+
+saisaLiveAdminApp.controller('gamesHomeController', function ($scope, $http, $state, $cookies) {
+
+
+    var tournamentId = 1;
+
+    $http({
+        method: 'GET',
+        url: 'http://localhost:8080/tournaments?tournamentId=' + tournamentId
+    }).then(function successCallback(response) {
+        $scope.tournamentData = response.data;
+        console.log($scope.tournamentData);
+
+
+    }, function errorCallback(response) {
+        // The next bit of code is asynchronously tricky.
+        alert("We encountered an error while retrieving your data");
+        console.log(response)
+
+    });
+
+    $http({
+        method: 'GET',
+        url: 'http://localhost:8080/games?activeStatus=1&tournamentId='+tournamentId
+    }).then(function successCallback(response) {
+        $scope.liveGames = response.data;
+
+    }, function errorCallback(response) {
+        // The next bit of code is asynchronously tricky.
+        alert("We encountered an error while retrieving your data");
+        console.log(response)
+    });
+
+    $http({
+        method: 'GET',
+        url: 'http://localhost:8080/games?activeStatus=0&tournamentId='+tournamentId
+    }).then(function successCallback(response) {
+        $scope.upcomingGames = response.data;
+
+    }, function errorCallback(response) {
+        // The next bit of code is asynchronously tricky.
+        alert("We encountered an error while retrieving your data");
+        console.log(response)
+    });
+
+    $http({
+        method: 'GET',
+        url: 'http://localhost:8080/games?activeStatus=2&tournamentId='+tournamentId
+    }).then(function successCallback(response) {
+        $scope.completedGames = response.data;
+
+    }, function errorCallback(response) {
+        // The next bit of code is asynchronously tricky.
+        alert("We encountered an error while retrieving your data");
+        console.log(response)
+    });
+
+    $http({
+        method: 'GET',
+        url: 'http://localhost:8080/games?activeStatus=3&tournamentId='+tournamentId
+    }).then(function successCallback(response) {
+        $scope.inactiveGames = response.data;
+
+    }, function errorCallback(response) {
+        // The next bit of code is asynchronously tricky.
+        alert("We encountered an error while retrieving your data");
+        console.log(response)
+    });
+
+
+    $scope.applyLiveChanges = function(liveIndex){
+
+        $http({
+            method: 'POST',
+            url: 'http://localhost:8080/games/result?gameId='+$scope.liveGames[liveIndex].id+'&result='+$scope.liveGames[liveIndex].result,
+
+        }).then(function successCallback(response) {
+            $http({
+                method: 'POST',
+                url: 'http://localhost:8080/games/status?gameId='+$scope.liveGames[liveIndex].id+'&newStatus='+$scope.liveGames[liveIndex].activeStatus,
+
+            }).then(function successCallback(response) {
+                alert('Databases Successfully Updated');
+                window.location.reload();
+
+
+            }, function errorCallback(response) {
+                // The next bit of code is asynchronously tricky.
+                alert("We encountered an error while saving your information.");
+                console.log(response)
+            });
+
+
+        }, function errorCallback(response) {
+            // The next bit of code is asynchronously tricky.
+            alert("We encountered an error while saving your information.");
+            console.log(response)
+        });
+
+    };
+
+    $scope.applyUpcomingChanges = function(upcomingIndex){
+
+        $http({
+            method: 'POST',
+            url: 'http://localhost:8080/games/result?gameId='+$scope.upcomingGames[upcomingIndex].id+'&result='+$scope.upcomingGames[upcomingIndex].result,
+
+        }).then(function successCallback(response) {
+            $http({
+                method: 'POST',
+                url: 'http://localhost:8080/games/status?gameId='+$scope.upcomingGames[upcomingIndex].id+'&newStatus='+$scope.upcomingGames[upcomingIndex].activeStatus,
+
+            }).then(function successCallback(response) {
+                alert('Databases Successfully Updated');
+                window.location.reload();
+
+
+            }, function errorCallback(response) {
+                // The next bit of code is asynchronously tricky.
+                alert("We encountered an error while saving your information.");
+                console.log(response)
+            });
+
+
+        }, function errorCallback(response) {
+            // The next bit of code is asynchronously tricky.
+            alert("We encountered an error while saving your information.");
+            console.log(response)
+        });
+
+    };
+
+
+    $scope.viewLive = function(type, index){
+      if(type ===1){
+          window.open($scope.liveGames[index].livestream.url);
+      }else if(type === 0){
+          window.open($scope.upcomingGames[index].livestream.url);
+      }
+    };
 
     $scope.home = function () {
 
