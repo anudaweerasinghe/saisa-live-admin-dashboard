@@ -76,6 +76,14 @@ saisaLiveAdminApp.config(function ($stateProvider, $urlRouterProvider) {
             // resolve: {authenticate: authenticate}
         })
 
+        .state('scoreGames', {
+            url: '/score?id',
+            params:{id:null},
+            templateUrl: 'score-games.html',
+            controller: 'scoreGamesController',
+            // resolve: {authenticate: authenticate}
+        })
+
 
         .state('login', {
             url: '/login',
@@ -83,11 +91,6 @@ saisaLiveAdminApp.config(function ($stateProvider, $urlRouterProvider) {
             controller: 'loginController'
         })
 
-        .state('score', {
-            url: '/score',
-            templateUrl: 'score.html',
-            controller: 'scoreController'
-        })
 
 
 
@@ -581,23 +584,11 @@ saisaLiveAdminApp.controller('gamesHomeController', function ($scope, $http, $st
 
         $http({
             method: 'POST',
-            url: 'http://localhost:8080/games/result?gameId='+$scope.liveGames[liveIndex].id+'&result='+$scope.liveGames[liveIndex].result,
+            url: 'http://localhost:8080/games/status?gameId='+$scope.liveGames[liveIndex].id+'&newStatus='+$scope.liveGames[liveIndex].activeStatus,
 
         }).then(function successCallback(response) {
-            $http({
-                method: 'POST',
-                url: 'http://localhost:8080/games/status?gameId='+$scope.liveGames[liveIndex].id+'&newStatus='+$scope.liveGames[liveIndex].activeStatus,
-
-            }).then(function successCallback(response) {
-                alert('Databases Successfully Updated');
-                window.location.reload();
-
-
-            }, function errorCallback(response) {
-                // The next bit of code is asynchronously tricky.
-                alert("We encountered an error while saving your information.");
-                console.log(response)
-            });
+            alert('Databases Successfully Updated');
+            window.location.reload();
 
 
         }, function errorCallback(response) {
@@ -612,23 +603,11 @@ saisaLiveAdminApp.controller('gamesHomeController', function ($scope, $http, $st
 
         $http({
             method: 'POST',
-            url: 'http://localhost:8080/games/result?gameId='+$scope.upcomingGames[upcomingIndex].id+'&result='+$scope.upcomingGames[upcomingIndex].result,
+            url: 'http://localhost:8080/games/status?gameId='+$scope.upcomingGames[upcomingIndex].id+'&newStatus='+$scope.upcomingGames[upcomingIndex].activeStatus,
 
         }).then(function successCallback(response) {
-            $http({
-                method: 'POST',
-                url: 'http://localhost:8080/games/status?gameId='+$scope.upcomingGames[upcomingIndex].id+'&newStatus='+$scope.upcomingGames[upcomingIndex].activeStatus,
-
-            }).then(function successCallback(response) {
-                alert('Databases Successfully Updated');
-                window.location.reload();
-
-
-            }, function errorCallback(response) {
-                // The next bit of code is asynchronously tricky.
-                alert("We encountered an error while saving your information.");
-                console.log(response)
-            });
+            alert('Databases Successfully Updated');
+            window.location.reload();
 
 
         }, function errorCallback(response) {
@@ -730,6 +709,10 @@ saisaLiveAdminApp.controller('gamesHomeController', function ($scope, $http, $st
 
     $scope.addGames = function(){
         $state.go('editGames');
+    };
+
+    $scope.startScoring = function(gameId){
+        window.location.replace("http://localhost/admin-saisa-live/#!/score?id="+gameId);
     }
 
 
@@ -885,6 +868,136 @@ saisaLiveAdminApp.controller('editGamesController', function ($scope, $http, $st
         window.location.replace("http://localhost/admin-saisa-live/#!/games");
 
     };
+});
+
+saisaLiveAdminApp.controller('scoreGamesController', function ($scope, $http, $state, $cookies, $stateParams) {
+
+    var tournamentId = 1;
+
+    $scope.gameComplete = false;
+
+    if($stateParams.id!=null) {
+        $http({
+            method: 'GET',
+            url: 'http://localhost:8080/games?gameId=' + $stateParams.id
+        }).then(function successCallback(response) {
+
+            $scope.gameData = response.data;
+
+            $scope.gameDescription = $scope.gameData[0].gameDescription;
+            $scope.team1Score = $scope.gameData[0].team1Score;
+            $scope.team2Score = $scope.gameData[0].team2Score;
+
+            $scope.team1 = $scope.gameData[0].team1.team.name;
+            $scope.team2 = $scope.gameData[0].team2.team.name;
+
+            if($scope.gameData[0].activeStatus===0){
+                $http({
+                    method: 'POST',
+                    url: 'http://localhost:8080/games/status?gameId='+$stateParams.id+'&newStatus='+1,
+
+                }).then(function successCallback(response) {
+                    $scope.gameData[0].activeStatus=1;
+                    window.location.reload();
+
+
+                }, function errorCallback(response) {
+                    // The next bit of code is asynchronously tricky.
+                    alert("We encountered an error while saving your information.");
+                    console.log(response)
+                });
+            }
+
+
+            $scope.activeStatus = $scope.gameData[0].activeStatus;
+
+
+        }, function errorCallback(response) {
+            // The next bit of code is asynchronously tricky.
+            alert("We encountered an error while retrieving your data");
+            console.log(response)
+
+        });
+
+    }else{
+        window.location.replace("http://localhost/admin-saisa-live/#!/games");
+
+    }
+
+    $http({
+        method: 'GET',
+        url: 'http://localhost:8080/tournaments?tournamentId=' + tournamentId
+    }).then(function successCallback(response) {
+        $scope.tournamentData = response.data;
+        console.log($scope.tournamentData);
+
+
+    }, function errorCallback(response) {
+        // The next bit of code is asynchronously tricky.
+        alert("We encountered an error while retrieving your data");
+        console.log(response)
+
+    });
+
+    $scope.saveScores = function(){
+
+        $http({
+            method: 'POST',
+            url: 'http://localhost:8080/games/scores?gameId='+$stateParams.id+'&t1Score='+$scope.team1Score+'&t2Score='+$scope.team2Score,
+
+        }).then(function successCallback(response) {
+            alert('Databases Successfully Updated');
+
+
+        }, function errorCallback(response) {
+            // The next bit of code is asynchronously tricky.
+            alert("We encountered an error while saving your information.");
+            console.log(response)
+        });
+    };
+
+    $scope.endGame = function(){
+        $scope.gameComplete = true;
+
+    };
+
+    $scope.saveResult = function(){
+        $http({
+            method: 'POST',
+            url: 'http://localhost:8080/games/result?gameId='+$stateParams.id+'&result='+parseInt($scope.result)
+
+        }).then(function successCallback(response) {
+            $http({
+                method: 'POST',
+                url: 'http://localhost:8080/games/status?gameId='+$stateParams.id+'&newStatus=2',
+
+            }).then(function successCallback(response) {
+                alert('Databases Successfully Updated. You can update standings in the next page');
+                window.location.replace("http://localhost/admin-saisa-live/#!/tournament-home?id="+tournamentId);
+
+
+            }, function errorCallback(response) {
+                // The next bit of code is asynchronously tricky.
+                alert("We encountered an error while saving your information.");
+                console.log(response)
+            });
+
+
+        }, function errorCallback(response) {
+            // The next bit of code is asynchronously tricky.
+            alert("We encountered an error while saving your information.");
+            console.log(response)
+        });
+
+    };
+
+    $scope.back = function () {
+
+        window.location.replace("http://localhost/admin-saisa-live/#!/games");
+
+    };
+
+
 });
 
 saisaLiveAdminApp.controller('editMediaController', function ($scope, $http, $state, $cookies, $stateParams) {
@@ -1233,97 +1346,6 @@ saisaLiveAdminApp.controller('editTournamentController', function ($scope, $http
 
 });
 
-saisaLiveAdminApp.controller('scoreController', function ($scope, $http, $state, $cookies) {
-
-
-    $scope.gameId = $cookies.get('gameId');
-    $scope.uname = $cookies.get('uname');
-
-    if($scope.gameId==='0'){
-        $state.go('home');
-    }
-
-    $http({
-        method: 'GET',
-        url: 'http://128.199.178.5:8080/saisa-volleyball/get/game-details?id='+$scope.gameId
-    }).then(function successCallback(response) {
-        $scope.gameDetails = response.data;
-        if($scope.gameDetails.id===49||$scope.gameDetails.id===48){
-            $scope.set5 = true;
-        }else{
-            $scope.set5 = false;
-
-        }
-    }, function errorCallback(response) {
-        // The next bit of code is asynchronously tricky.
-        alert("We encountered an error while retrieving game data");
-        console.log(response)
-
-    });
-
-    $scope.updateScores = function(team, change){
-
-        var tem = 't'+team;
-        var updateType = change;
-
-        $http({
-            method: 'GET',
-            url: 'http://128.199.178.5:8080/saisa-volleyball/update/update?change='+updateType+'&team='+tem+'&uname='+$scope.uname
-        }).then(function successCallback(response) {
-            $scope.gameDetails = response.data;
-
-        }, function errorCallback(response) {
-            // The next bit of code is asynchronously tricky.
-            alert("We encountered an error while updating game data");
-            console.log(response)
-
-        });
-
-    };
-
-    $scope.newSet = function(){
-        $http({
-            method: 'GET',
-            url: 'http://128.199.178.5:8080/saisa-volleyball/update/end-set?uname='+$scope.uname
-        }).then(function successCallback(response) {
-            $scope.gameDetails = response.data;
-
-        }, function errorCallback(response) {
-            // The next bit of code is asynchronously tricky.
-            alert("We encountered an error while updating game data");
-            console.log(response)
-
-        });
-    };
-
-    $scope.endGame = function(){
-        $http({
-            method: 'GET',
-            url: 'http://128.199.178.5:8080/saisa-volleyball/update/end-session?uname='+$scope.uname
-        }).then(function successCallback(response) {
-            $cookies.remove('gameId');
-            window.location.replace("http://osc.lk/saisa/#!/match-details?tgId=" + $scope.gameId );
-
-        }, function errorCallback(response) {
-            // The next bit of code is asynchronously tricky.
-            alert("We encountered an error while updating game data");
-            console.log(response)
-
-        });
-    };
-
-    $scope.logout = function () {
-
-        $cookies.remove("uname");
-        $cookies.remove("password");
-        $cookies.remove("gameId");
-        $state.go('login')
-
-
-    };
-
-
-});
 
 
 saisaLiveAdminApp.controller('loginController', function ($scope, $http, $cookies, $state) {

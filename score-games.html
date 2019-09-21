@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+<script src="assets/js/index.js"></script>
+
+<script src="app.js"></script>
+<link rel="stylesheet" href="assets/css/style.css">
+
+<link rel="shortcut icon" href="assets/favicon.jpg">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{tournamentData.name}} - Score {{team1}} vs {{team2}}</title>
+
+</head>
+<body>
+<center>
+
+    <div align="left">
+        <button style="font-size: large; display: inline-block; margin-right: 90%" ng-click="logout()">Logout</button>
+        <button style="font-size: large; display: inline-block;" ng-click="back()">Back</button>
+    </div>
+    <h1>Score Game - {{team1}} vs {{team2}}</h1>
+
+    <h2 style="color: #17376e">{{gameDescription}}, {{tournamentData.name}}</h2>
+    <h2 ng-if="activeStatus===1" style="color: orangered">Live Now</h2>
+    <h2 ng-if="activeStatus===0" style="color: darkslategray">Upcoming Fixture</h2>
+    <h2 ng-if="activeStatus===2" style="color: darkslategray">Completed Result</h2>
+    <h2 ng-if="activeStatus===3" style="color: darkslategray">Inactive Score/Game</h2>
+
+
+    <br><br>
+</center>
+
+<form style="width: 100%" name="pics">
+
+    <div class="col-md-12">
+        <div class="col-md-4">
+            <h4 style=" display: inline-block; margin-right: 500px; font-size: 25pt">{{team1}} Score</h4>
+
+        </div>
+        <div class="col-md-8">
+            <input type="text" style=" display: inline-block; margin-right: 500px; font-size: 25pt" name="team-photo" ng-model="team1Score">
+            <br><br>    <br><br>
+        </div>
+    </div>
+
+
+
+
+    <div class="col-md-12">
+        <div class="col-md-4">
+            <h4 style=" display: inline-block; margin-right: 500px; font-size: 25pt">{{team2}} Score</h4>
+
+        </div>
+        <div class="col-md-8">
+            <input type="text" style=" display: inline-block; margin-right: 500px; font-size: 25pt" name="team-photo" ng-model="team2Score">
+            <br><br>    <br><br>
+
+        </div>
+    </div>
+
+    <br><br>
+
+    <button type="submit" class="button buttonBlue" style="font-family: Futura" ng-click="saveScores()"
+            ng-disabled="pics.$invalid">Save Scores
+        <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
+    </button>
+
+    <br><br>
+
+    <button type="submit" class="button buttonBlue" style="font-family: Futura" ng-click="endGame()" ng-if="activeStatus===1"
+            ng-disabled="pics.$invalid">End Game and Select Winner
+        <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
+    </button>
+    <br><br>
+
+    <div ng-if="gameComplete">
+        <div class="col-md-12">
+            <div class="col-md-4">
+                <h4 style=" display: inline-block; margin-right: 500px; font-size: 25pt">Result</h4>
+
+            </div>
+            <div class="col-md-8">
+                <select ng-model="$parent.result" style="width: 100%; font-size: 20pt; background: white;">
+                    <option value="1">{{team1}} Won</option>
+                    <option value="2">{{team2}} Won</option>
+                    <option value="0">No Result</option>
+                </select>
+                <br><br>    <br><br>
+
+            </div>
+        </div>
+
+        <button type="submit" class="button buttonBlue" style="font-family: Futura" ng-click="saveResult()"
+                ng-disabled="pics.$invalid">Save Result and Update Standings
+            <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
+        </button>
+    </div>
+
+
+
+</form>
+</body>
+</html>

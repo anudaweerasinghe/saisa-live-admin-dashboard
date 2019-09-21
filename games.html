@@ -61,7 +61,6 @@
             <th style="font-size: 20pt"></th>
             <th style="font-size: 20pt">Team 2 Score</th>
             <th style="font-size: 20pt">Live Status</th>
-            <th style="font-size: 20pt">Result</th>
 
             <th style="font-size: 20pt"></th>
             <th style="font-size: 20pt"></th>
@@ -87,13 +86,6 @@
                         <option value="2">Completed</option>
                         <option value="3">Inactive</option>
                     </select>
-                </td>                <td align="center">
-                    <select ng-model="items.result" style="background: white; font-size: 16pt; width: 80%;">
-                        <option value="0">No Result</option>
-                        <option value="1">{{items.team1.team.name}} Won</option>
-                        <option value="2">{{items.team2.team.name}} Won</option>
-
-                    </select>
                 </td>
                 <td align="center">
                     <div>
@@ -107,7 +99,7 @@
                 <td align="center">
                     <div>
                         <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
-                                ng-click="viewCover(1, $index)">Start Scoring
+                                ng-click="startScoring(items.id)">Start Scoring
                             <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
                         </button>
                     </div>
@@ -157,7 +149,6 @@
             <th style="font-size: 20pt"></th>
             <th style="font-size: 20pt">Team 2 Score</th>
             <th style="font-size: 20pt">Live Status</th>
-            <th style="font-size: 20pt">Result</th>
 
             <th style="font-size: 20pt"></th>
             <th style="font-size: 20pt"></th>
@@ -183,14 +174,7 @@
                         <option value="2">Completed</option>
                         <option value="3">Inactive</option>
                     </select>
-                </td>                <td align="center">
-                <select ng-model="items.result" style="background: white; font-size: 16pt; width: 80%;">
-                    <option value="0">No Result</option>
-                    <option value="1">{{items.team1.team.name}} Won</option>
-                    <option value="2">{{items.team2.team.name}} Won</option>
-
-                </select>
-            </td>
+                </td>
                 <td align="center">
                     <div>
                         <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
@@ -203,7 +187,7 @@
                 <td align="center">
                     <div>
                         <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
-                                ng-click="viewCover(1, $index)">Start Scoring
+                                ng-click="startScoring(items.id)">Start Scoring
                             <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
                         </button>
                     </div>
@@ -299,7 +283,7 @@
                 <td align="center">
                     <div>
                         <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
-                                ng-click="viewCover(1, $index)">Edit Scores
+                                ng-click="startScoring(items.id)">Edit Scores
                             <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
                         </button>
                     </div>
@@ -395,7 +379,7 @@
                 <td align="center">
                     <div>
                         <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
-                                ng-click="viewCover(1, $index)">Edit Scores
+                                ng-click="startScoring(items.id)">Edit Scores
                             <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
                         </button>
                     </div>
