@@ -29,7 +29,7 @@
         <div class="col-md-4">
             <div>
                 <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
-                        ng-click="addMedia(1)">Add Games +
+                        ng-click="addGames()">Add Games +
                     <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
                 </button>
             </div>
@@ -124,7 +124,7 @@
                 <td align="center">
                     <div>
                         <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
-                                ng-click="applyPhotoChanges($index)">Edit Game Details
+                                ng-click="editGames(items.id)">Edit Game Details
                             <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
                         </button>
                     </div>
@@ -220,7 +220,7 @@
                 <td align="center">
                     <div>
                         <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
-                                ng-click="applyPhotoChanges($index)">Edit Game Details
+                                ng-click="editGames(items.id)">Edit Game Details
                             <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
                         </button>
                     </div>
@@ -316,7 +316,7 @@
                 <td align="center">
                     <div>
                         <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
-                                ng-click="applyPhotoChanges($index)">Edit Game Details
+                                ng-click="editGames(items.id)">Edit Game Details
                             <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
                         </button>
                     </div>
@@ -412,7 +412,7 @@
                 <td align="center">
                     <div>
                         <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
-                                ng-click="applyInActiveChanges($index)">Edit Game Details
+                                ng-click="editGames(items.id)">Edit Game Details
                             <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
                         </button>
                     </div>
