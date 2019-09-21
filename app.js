@@ -13,7 +13,7 @@ saisaLiveAdminApp.config(function ($stateProvider, $urlRouterProvider) {
             params:{id:null},
             templateUrl: 'tournament.html',
             controller: 'tournamentHomeController',
-            // resolve: {authenticate: authenticate}
+            resolve: {authenticate: authenticate}
 
         })
 
@@ -22,7 +22,7 @@ saisaLiveAdminApp.config(function ($stateProvider, $urlRouterProvider) {
             params:{pool:null},
             templateUrl: 'participant.html',
             controller: 'editParticipantController',
-            // resolve: {authenticate: authenticate}
+            resolve: {authenticate: authenticate}
         })
 
         .state('editTournament', {
@@ -30,28 +30,28 @@ saisaLiveAdminApp.config(function ($stateProvider, $urlRouterProvider) {
             params:{id:null},
             templateUrl: 'edit-tournament.html',
             controller: 'editTournamentController',
-            // resolve: {authenticate: authenticate}
+            resolve: {authenticate: authenticate}
         })
 
         .state('liveStreamHome', {
             url: '/livestream',
             templateUrl: 'livestream.html',
             controller: 'liveStreamHomeController',
-            // resolve: {authenticate: authenticate}
+            resolve: {authenticate: authenticate}
         })
 
         .state('addLiveStream', {
             url: '/add-livestream',
             templateUrl: 'edit-livestream.html',
             controller: 'addLiveController',
-            // resolve: {authenticate: authenticate}
+            resolve: {authenticate: authenticate}
         })
 
         .state('mediaHome', {
             url: '/media',
             templateUrl: 'media.html',
             controller: 'mediaHomeController',
-            // resolve: {authenticate: authenticate}
+            resolve: {authenticate: authenticate}
         })
 
         .state('editMedia', {
@@ -59,14 +59,14 @@ saisaLiveAdminApp.config(function ($stateProvider, $urlRouterProvider) {
             params:{id:null, mediaType:null},
             templateUrl: 'edit-media.html',
             controller: 'editMediaController',
-            // resolve: {authenticate: authenticate}
+            resolve: {authenticate: authenticate}
         })
 
         .state('gamesHome', {
             url: '/games',
             templateUrl: 'games.html',
             controller: 'gamesHomeController',
-            // resolve: {authenticate: authenticate}
+            resolve: {authenticate: authenticate}
         })
 
         .state('editGames', {
@@ -74,7 +74,7 @@ saisaLiveAdminApp.config(function ($stateProvider, $urlRouterProvider) {
             params:{id:null},
             templateUrl: 'edit-games.html',
             controller: 'editGamesController',
-            // resolve: {authenticate: authenticate}
+            resolve: {authenticate: authenticate}
         })
 
         .state('scoreGames', {
@@ -82,7 +82,7 @@ saisaLiveAdminApp.config(function ($stateProvider, $urlRouterProvider) {
             params:{id:null},
             templateUrl: 'score-games.html',
             controller: 'scoreGamesController',
-            // resolve: {authenticate: authenticate}
+            resolve: {authenticate: authenticate}
         })
 
 
@@ -96,7 +96,7 @@ saisaLiveAdminApp.config(function ($stateProvider, $urlRouterProvider) {
             url: '/admin-home',
             templateUrl: 'admin.html',
             controller: 'adminHomeController',
-            // resolve: {authenticate: adminAuthenticate}
+            resolve: {authenticate: adminAuthenticate}
 
         })
 
@@ -105,7 +105,7 @@ saisaLiveAdminApp.config(function ($stateProvider, $urlRouterProvider) {
             params:{tournamentId:null},
             templateUrl: 'admin-accounts.html',
             controller: 'accountsHomeController',
-            // resolve: {authenticate: authenticate}
+            resolve: {authenticate: adminAuthenticate}
         })
 
         .state('editAdminAccounts', {
@@ -113,57 +113,105 @@ saisaLiveAdminApp.config(function ($stateProvider, $urlRouterProvider) {
             params:{id:null, tournamentId:null, username:null},
             templateUrl: 'edit-account.html',
             controller: 'editAdminAccountsController',
-            // resolve: {authenticate: authenticate}
+            resolve: {authenticate: adminAuthenticate}
         })
 
 });
 
-// function authenticate($q, $http, $state, $timeout, $cookies, $stateParams) {
-//     var username = $cookies.get("username");
-//     var password = $cookies.get("password");
-//
-//     if (username != null && password != null) {
-//
-//         $http({
-//             method: 'POST',
-//             url: 'http://localhost:8080/admin/verify',
-//             data: {
-//                 "username": username,
-//                 "password": password
-//             },
-//             transformResponse: []
-//         }).then(function successCallback(response) {
-//             $cookies.put('gameId', response.data);
-//             return $q.when()
-//         }, function errorCallback(response) {
-//             alert("Fail");
-//             // The next bit of code is asynchronously tricky.
-//
-//             $timeout(function () {
-//                 // This code runs after the authentication promise has been rejected.
-//                 // Go to the log-in page
-//                 $state.go('login')
-//             });
-//
-//             // Reject the authentication promise to prevent the state from loading
-//             return $q.reject()
-//             // called asynchronously if an error occurs
-//             // or server returns response with an error status.
-//         });
-//
-//
-//     } else {
-//         $state.go('login');
-//
-//     }
-// }
+function authenticate($q, $http, $state, $timeout, $cookies, $stateParams) {
+    var username = $cookies.get("username");
+    var password = $cookies.get("password");
+
+    if (username != null && password != null) {
+
+        $http({
+            method: 'POST',
+            url: 'http://localhost:8080/admin/verify',
+            data: {
+                "username": username,
+                "password": password
+            },
+            transformResponse: []
+        }).then(function successCallback(response) {
+           return $q.when()
+        }, function errorCallback(response) {
+            alert("Fail");
+            // The next bit of code is asynchronously tricky.
+
+            $timeout(function () {
+                // This code runs after the authentication promise has been rejected.
+                // Go to the log-in page
+                $state.go('login')
+            });
+
+            // Reject the authentication promise to prevent the state from loading
+            return $q.reject()
+            // called asynchronously if an error occurs
+            // or server returns response with an error status.
+        });
+
+
+    } else {
+        $state.go('login');
+
+    }
+}
+
+function adminAuthenticate($q, $http, $state, $timeout, $cookies, $stateParams) {
+    var username = $cookies.get("username");
+    var password = $cookies.get("password");
+
+    if (username != null && password != null) {
+
+        $http({
+            method: 'POST',
+            url: 'http://localhost:8080/admin/verify',
+            data: {
+                "username": username,
+                "password": password
+            },
+        }).then(function successCallback(response) {
+            if(response.data === ""){
+                return $q.when()
+            }else{
+                alert("Sorry, your account is not authorized to access the Admin portal");
+                $state.go('login')
+            }
+        }, function errorCallback(response) {
+            alert("Fail");
+            // The next bit of code is asynchronously tricky.
+
+            $timeout(function () {
+                // This code runs after the authentication promise has been rejected.
+                // Go to the log-in page
+                $state.go('login')
+            });
+
+            // Reject the authentication promise to prevent the state from loading
+            return $q.reject()
+            // called asynchronously if an error occurs
+            // or server returns response with an error status.
+        });
+
+
+    } else {
+        $state.go('login');
+
+    }
+}
+
 
 
 saisaLiveAdminApp.controller('tournamentHomeController', function ($scope, $http, $state, $cookies, $stateParams) {
 
     var tournamentId = $stateParams.id;
 
-    $scope.adminUser = true;
+    $scope.adminUser = false;
+    if($cookies.get("access")==="0"){
+        $scope.adminUser = true;
+    }
+    $cookies.remove("workingTournament");
+    $cookies.put("workingTournament", tournamentId);
 
     $http({
         method: 'GET',
@@ -220,6 +268,7 @@ saisaLiveAdminApp.controller('tournamentHomeController', function ($scope, $http
         $cookies.remove("username");
         $cookies.remove("password");
         $cookies.remove("access");
+        $cookies.remove("workingTournament");
 
         $state.go('login')
 
@@ -257,7 +306,7 @@ saisaLiveAdminApp.controller('tournamentHomeController', function ($scope, $http
 
 saisaLiveAdminApp.controller('liveStreamHomeController', function ($scope, $http, $state, $cookies) {
 
-    var tournamentId = 1;
+    var tournamentId = $cookies.get("workingTournament");
 
     $http({
         method: 'GET',
@@ -274,6 +323,7 @@ saisaLiveAdminApp.controller('liveStreamHomeController', function ($scope, $http
         console.log(response)
 
     });
+
 
     $http({
         method: 'GET',
@@ -333,14 +383,23 @@ saisaLiveAdminApp.controller('liveStreamHomeController', function ($scope, $http
     };
 
 
+    $scope.logout = function () {
 
+        $cookies.remove("username");
+        $cookies.remove("password");
+        $cookies.remove("access");
+        $cookies.remove("workingTournament");
+
+        $state.go('login')
+
+    };
 });
 
 saisaLiveAdminApp.controller('mediaHomeController', function ($scope, $http, $state, $cookies) {
 
     $scope.newsText = false;
 
-    var tournamentId = 1;
+    var tournamentId = $cookies.get("workingTournament");
 
     $http({
         method: 'GET',
@@ -521,7 +580,7 @@ saisaLiveAdminApp.controller('mediaHomeController', function ($scope, $http, $st
             window.open($scope.videos[contentIndex].contentUrl);
 
         }else if(type==3){
-            window.replace("http://localhost/admin-saisa-live/#!/edit-media?id="+$scope.news[contentIndex].id);
+            window.location.replace("http://localhost/admin-saisa-live/#!/edit-media?id="+$scope.news[contentIndex].id);
 
         }
     };
@@ -537,13 +596,22 @@ saisaLiveAdminApp.controller('mediaHomeController', function ($scope, $http, $st
 
     };
 
+    $scope.logout = function () {
 
+        $cookies.remove("username");
+        $cookies.remove("password");
+        $cookies.remove("access");
+        $cookies.remove("workingTournament");
+
+        $state.go('login')
+
+    };
 });
 
 saisaLiveAdminApp.controller('gamesHomeController', function ($scope, $http, $state, $cookies) {
 
 
-    var tournamentId = 1;
+    var tournamentId =     $cookies.get("workingTournament");
 
     $http({
         method: 'GET',
@@ -744,12 +812,22 @@ saisaLiveAdminApp.controller('gamesHomeController', function ($scope, $http, $st
         window.location.replace("http://localhost/admin-saisa-live/#!/score?id="+gameId);
     }
 
+    $scope.logout = function () {
 
+        $cookies.remove("username");
+        $cookies.remove("password");
+        $cookies.remove("access");
+        $cookies.remove("workingTournament");
+
+        $state.go('login')
+
+    };
 });
 
 saisaLiveAdminApp.controller('editGamesController', function ($scope, $http, $state, $cookies, $stateParams) {
 
-    var tournamentId = 1;
+    var tournamentId =     $cookies.get("workingTournament");
+
     $scope.newGames = true;
     $scope.editGames = false;
 
@@ -897,11 +975,23 @@ saisaLiveAdminApp.controller('editGamesController', function ($scope, $http, $st
         window.location.replace("http://localhost/admin-saisa-live/#!/games");
 
     };
+
+    $scope.logout = function () {
+
+        $cookies.remove("username");
+        $cookies.remove("password");
+        $cookies.remove("access");
+        $cookies.remove("workingTournament");
+
+        $state.go('login')
+
+    };
 });
 
 saisaLiveAdminApp.controller('scoreGamesController', function ($scope, $http, $state, $cookies, $stateParams) {
 
-    var tournamentId = 1;
+    var tournamentId =     $cookies.get("workingTournament");
+
 
     $scope.gameComplete = false;
 
@@ -1026,12 +1116,23 @@ saisaLiveAdminApp.controller('scoreGamesController', function ($scope, $http, $s
 
     };
 
+    $scope.logout = function () {
+
+        $cookies.remove("username");
+        $cookies.remove("password");
+        $cookies.remove("access");
+        $cookies.remove("workingTournament");
+
+        $state.go('login')
+
+    };
 
 });
 
 saisaLiveAdminApp.controller('editMediaController', function ($scope, $http, $state, $cookies, $stateParams) {
 
-    var tournamentId = 1;
+    var tournamentId = $cookies.get("workingTournament");
+
 
     $scope.isNews = false;
     $scope.typeSelected=false;
@@ -1169,7 +1270,7 @@ saisaLiveAdminApp.controller('editMediaController', function ($scope, $http, $st
 
 saisaLiveAdminApp.controller('addLiveController', function ($scope, $http, $state, $cookies) {
 
-    var tournamentId = 1;
+    var tournamentId = $cookies.get("workingTournament");
 
     $http({
         method: 'GET',
@@ -1210,15 +1311,17 @@ saisaLiveAdminApp.controller('addLiveController', function ($scope, $http, $stat
     };
 
 
-    // $scope.logout = function () {
-    //
-    //     $cookies.remove("uname");
-    //     $cookies.remove("password");
-    //     $cookies.remove("gameId");
-    //
-    //     $state.go('login');
-    //
-    // };
+    $scope.logout = function () {
+
+        $cookies.remove("username");
+        $cookies.remove("password");
+        $cookies.remove("access");
+        $cookies.remove("workingTournament");
+
+        $state.go('login')
+
+    };
+
     $scope.home = function () {
 
         window.location.replace("http://localhost/admin-saisa-live/#!/tournament-home?id="+tournamentId);
@@ -1229,7 +1332,7 @@ saisaLiveAdminApp.controller('addLiveController', function ($scope, $http, $stat
 
 saisaLiveAdminApp.controller('editParticipantController', function ($scope, $http, $state, $cookies, $stateParams) {
 
-    var tournamentId = 1;
+    var tournamentId = $cookies.get("workingTournament");
 
     if($stateParams.pool!=null){
         $scope.poolNumber = $stateParams.pool;
@@ -1292,20 +1395,21 @@ saisaLiveAdminApp.controller('editParticipantController', function ($scope, $htt
     };
 
 
-        // $scope.logout = function () {
-        //
-        //     $cookies.remove("uname");
-        //     $cookies.remove("password");
-        //     $cookies.remove("gameId");
-        //
-        //     $state.go('login');
-        //
-        // };
-        $scope.home = function () {
+    $scope.logout = function () {
 
-            window.location.replace("http://localhost/admin-saisa-live/#!/tournament-home?id="+tournamentId);
+        $cookies.remove("username");
+        $cookies.remove("password");
+        $cookies.remove("access");
+        $cookies.remove("workingTournament");
 
-        };
+        $state.go('login')
+
+    };
+
+    $scope.home = function () {
+
+        window.location.replace("http://localhost/admin-saisa-live/#!/tournament-home?id="+tournamentId);
+    };
 });
 
 saisaLiveAdminApp.controller('editTournamentController', function ($scope, $http, $state, $cookies, $stateParams) {
@@ -1429,6 +1533,17 @@ saisaLiveAdminApp.controller('editTournamentController', function ($scope, $http
         }
     };
 
+    $scope.logout = function () {
+
+        $cookies.remove("username");
+        $cookies.remove("password");
+        $cookies.remove("access");
+        $cookies.remove("workingTournament");
+
+        $state.go('login')
+
+    };
+
 });
 
 saisaLiveAdminApp.controller('adminHomeController', function ($scope, $http, $state, $cookies) {
@@ -1482,6 +1597,7 @@ saisaLiveAdminApp.controller('adminHomeController', function ($scope, $http, $st
         $cookies.remove("username");
         $cookies.remove("password");
         $cookies.remove("access");
+        $cookies.remove("workingTournament");
 
         $state.go('login')
 
@@ -1537,8 +1653,17 @@ saisaLiveAdminApp.controller('accountsHomeController', function ($scope, $http, 
 
     $scope.home = function(){
         $state.go("admin");
-    }
+    };
+    $scope.logout = function () {
 
+        $cookies.remove("username");
+        $cookies.remove("password");
+        $cookies.remove("access");
+        $cookies.remove("workingTournament");
+
+        $state.go('login')
+
+    };
 
 });
 
@@ -1630,7 +1755,16 @@ saisaLiveAdminApp.controller('editAdminAccountsController', function ($scope, $h
 
     };
 
+    $scope.logout = function () {
 
+        $cookies.remove("username");
+        $cookies.remove("password");
+        $cookies.remove("access");
+        $cookies.remove("workingTournament");
+
+        $state.go('login')
+
+    };
 
     $scope.back = function(){
         window.location.replace("http://localhost/admin-saisa-live/#!/admin-accounts?tournamentId=" + tournamentId);
@@ -1661,7 +1795,8 @@ saisaLiveAdminApp.controller('loginController', function ($scope, $http, $cookie
 
             }else{
                 $cookies.put("access", $scope.response.id);
-
+                $cookies.put("username", $scope.username);
+                $cookies.put("password", $scope.password);
                 window.location.replace("http://localhost/admin-saisa-live/#!/tournament-home?id="+$scope.response.id);
 
             }
