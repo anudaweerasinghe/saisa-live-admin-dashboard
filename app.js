@@ -633,12 +633,80 @@ saisaLiveAdminApp.controller('gamesHomeController', function ($scope, $http, $st
 
     };
 
+    $scope.applyCompletedChanges = function(completedIndex){
+
+        $http({
+            method: 'POST',
+            url: 'http://localhost:8080/games/result?gameId='+$scope.completedGames[completedIndex].id+'&result='+$scope.completedGames[completedIndex].result,
+
+        }).then(function successCallback(response) {
+            $http({
+                method: 'POST',
+                url: 'http://localhost:8080/games/status?gameId='+$scope.completedGames[completedIndex].id+'&newStatus='+$scope.completedGames[completedIndex].activeStatus,
+
+            }).then(function successCallback(response) {
+                alert('Databases Successfully Updated');
+                window.location.reload();
+
+
+            }, function errorCallback(response) {
+                // The next bit of code is asynchronously tricky.
+                alert("We encountered an error while saving your information.");
+                console.log(response)
+            });
+
+
+        }, function errorCallback(response) {
+            // The next bit of code is asynchronously tricky.
+            alert("We encountered an error while saving your information.");
+            console.log(response)
+        });
+
+    };
+
+    $scope.applyInactiveChanges = function(inactiveIndex){
+
+        $http({
+            method: 'POST',
+            url: 'http://localhost:8080/games/result?gameId='+$scope.inactiveGames[inactiveIndex].id+'&result='+$scope.inactiveGames[inactiveIndex].result,
+
+        }).then(function successCallback(response) {
+            $http({
+                method: 'POST',
+                url: 'http://localhost:8080/games/status?gameId='+$scope.inactiveGames[inactiveIndex].id+'&newStatus='+$scope.inactiveGames[inactiveIndex].activeStatus,
+
+            }).then(function successCallback(response) {
+                alert('Databases Successfully Updated');
+                window.location.reload();
+
+
+            }, function errorCallback(response) {
+                // The next bit of code is asynchronously tricky.
+                alert("We encountered an error while saving your information.");
+                console.log(response)
+            });
+
+
+        }, function errorCallback(response) {
+            // The next bit of code is asynchronously tricky.
+            alert("We encountered an error while saving your information.");
+            console.log(response)
+        });
+
+    };
+
+
 
     $scope.viewLive = function(type, index){
       if(type ===1){
           window.open($scope.liveGames[index].livestream.url);
       }else if(type === 0){
           window.open($scope.upcomingGames[index].livestream.url);
+      }else if(type === 2){
+          window.open($scope.completedGames[index].livestream.url);
+      }else{
+          window.open($scope.inactiveGames[index].livestream.url);
+
       }
     };
 
