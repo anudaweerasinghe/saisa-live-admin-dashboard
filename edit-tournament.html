@@ -10,7 +10,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>{{tournamentData.name}} - Edit Tournament</title>
+    <title ng-if="editTournament">{{tournamentData.name}} - Edit Tournament</title>
+    <title ng-if="newTournament">Add New Tournament</title>
 
 </head>
 <body>
@@ -20,9 +21,10 @@
         <button style="font-size: large; display: inline-block; margin-right: 90%" ng-click="logout()">Logout</button>
         <button style="font-size: large; display: inline-block" ng-click="home()">Home</button>
     </div>
-    <h1>Edit Tournament</h1>
+    <h1 ng-if="editTournament">Edit Tournament</h1>
+    <h1 ng-if="newTournament">Add New  Tournament</h1>
 
-    <h2 style="color: #17376e">{{tournamentData.name}}</h2>
+    <h2 ng-if="editTournament" style="color: #17376e">{{tournamentData.name}}</h2>
     <br><br>
 </center>
 
@@ -68,21 +70,28 @@
 
     <br><br>
     <div class="col-md-12">
-        <div class="col-md-4">
+        <div class="col-md-3">
+            <h4 style=" display: inline-block; margin-right: 500px">Tournament is Active</h4>
+
+            <input style="transform: scale(1)" type="checkbox" ng-model="tournamentData.active"
+                   value="{{tournamentData.active}}">
+
+        </div>
+        <div class="col-md-3">
             <h4 style=" display: inline-block; margin-right: 500px">Scores Feature</h4>
 
             <input style="transform: scale(1)" type="checkbox" ng-model="tournamentData.scoresActive"
                    value="{{tournamentData.scoresActive}}">
 
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <h4 style=" display: inline-block; margin-right: 500px">Standings Feature</h4>
 
             <input style="transform: scale(1)" type="checkbox" ng-model="tournamentData.standingsActive"
                    value="{{tournamentData.standingsActive}}">
 
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <h4 style=" display: inline-block; margin-right: 500px">Pools Active</h4>
 
             <input style="transform: scale(1)" type="checkbox" ng-model="tournamentData.poolsActive"
