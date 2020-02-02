@@ -28,8 +28,7 @@
     <br><br>
 </center>
 
-<form style="width: 100%" name="pics">
-
+<form style="width: 100%" name="tournament">
     <h4 style=" display: inline-block; margin-right: 500px">Tournament Name</h4>
     <input type="text" style=" display: inline-block; margin-right: 500px" name="tournament_name"
            ng-model="tournamentData.name">
@@ -40,84 +39,61 @@
            ng-model="tournamentData.location">
     <br>
     <br>
-
     <h4 style=" display: inline-block; margin-right: 500px">Sport/Event Type</h4>
     <select ng-model="tournamentData.sportId" style="width: 100%; font-size: 20pt; background: white;">
         <option ng-repeat="item in sportData" value="{{item.id}}">{{item.name}}</option>
     </select>
     <br>
     <br>
-
     <h4 style=" display: inline-block; margin-right: 500px">URL to Tournament Webpage</h4>
     <input type="text" style=" display: inline-block; margin-right: 500px" name="url" ng-model="tournamentData.url">
-
     <br><br>
-
     <h4 style=" display: inline-block; margin-right: 500px">URL to Tournament Logo</h4>
     <input type="text" style=" display: inline-block; margin-right: 500px" name="logo" ng-model="tournamentData.logo">
-
     <br><br>
-
     <h4 style=" display: inline-block; margin-right: 500px">Start Date</h4>
     <input type="text" style=" display: inline-block; margin-right: 500px" name="start-date"
            ng-model="tournamentData.startDate">
-
     <br><br>
-
     <h4 style=" display: inline-block; margin-right: 500px">End Date</h4>
     <input type="text" style=" display: inline-block; margin-right: 500px" name="end-date"
            ng-model="tournamentData.endDate">
-
     <br><br>
     <div class="col-md-12">
         <div class="col-md-3">
             <h4 style=" display: inline-block; margin-right: 500px">Tournament is Active</h4>
-
             <input style="transform: scale(1)" type="checkbox" ng-model="tournamentData.active"
                    value="{{tournamentData.active}}">
-
         </div>
         <div class="col-md-3">
             <h4 style=" display: inline-block; margin-right: 500px">Scores Feature</h4>
-
             <input style="transform: scale(1)" type="checkbox" ng-model="tournamentData.scoresActive"
                    value="{{tournamentData.scoresActive}}">
-
         </div>
         <div class="col-md-3">
             <h4 style=" display: inline-block; margin-right: 500px">Standings Feature</h4>
-
             <input style="transform: scale(1)" type="checkbox" ng-model="tournamentData.standingsActive"
                    value="{{tournamentData.standingsActive}}">
-
         </div>
         <div class="col-md-3">
             <h4 style=" display: inline-block; margin-right: 500px">Pools Active</h4>
-
             <input style="transform: scale(1)" type="checkbox" ng-model="tournamentData.poolsActive"
                    value="{{tournamentData.poolsActive}}">
-
         </div>
     </div>
-    <br><br>
-    <br><br>
-    <br><br>
-
-
+    <br><br><br><br><br><br>
     <div ng-if="tournamentData.poolsActive">
         <h4 style=" display: inline-block; margin-right: 500px">Number of Pools</h4>
         <input type="text" style=" display: inline-block; margin-right: 500px" name="pool-quant"
                ng-model="tournamentData.poolQuantity">
-
         <br><br>
     </div>
     <br>
     <br>
     <button type="submit" class="button buttonBlue" style="font-family: Futura" ng-click="saveTournament()"
-            ng-disabled="pics.$invalid">Save Tournament Details
+            ng-disabled="tournament.$invalid">Save Tournament Details
         <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
     </button>
-
 </form>
 </body>
 </html>

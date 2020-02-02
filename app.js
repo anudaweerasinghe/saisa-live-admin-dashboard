@@ -118,42 +118,31 @@ saisaLiveAdminApp.config(function ($stateProvider, $urlRouterProvider) {
 
 });
 
-function authenticate($q, $http, $state, $timeout, $cookies, $stateParams) {
+function authenticate($q, $http, $state, $timeout, $cookies) {
     var username = $cookies.get("username");
     var password = $cookies.get("password");
 
     if (username != null && password != null) {
-
         $http({
             method: 'POST',
-            url: 'http://localhost:8080/admin/verify',
+            url: 'http://142.93.212.170:8080/saisa-live/admin/verify',
             data: {
                 "username": username,
                 "password": password
             },
             transformResponse: []
         }).then(function successCallback(response) {
-           return $q.when()
+           return $q.when()         //Allow access to page
         }, function errorCallback(response) {
-            alert("Fail");
-            // The next bit of code is asynchronously tricky.
-
+            alert("Fail");      //Show unauthorized error
             $timeout(function () {
-                // This code runs after the authentication promise has been rejected.
-                // Go to the log-in page
-                $state.go('login')
+                $state.go('login')      //Redirect to login page
             });
+            return $q.reject()      //Reject request for access to the page
 
-            // Reject the authentication promise to prevent the state from loading
-            return $q.reject()
-            // called asynchronously if an error occurs
-            // or server returns response with an error status.
         });
-
-
     } else {
         $state.go('login');
-
     }
 }
 
@@ -165,7 +154,7 @@ function adminAuthenticate($q, $http, $state, $timeout, $cookies, $stateParams) 
 
         $http({
             method: 'POST',
-            url: 'http://localhost:8080/admin/verify',
+            url: 'http://142.93.212.170:8080/saisa-live/admin/verify',
             data: {
                 "username": username,
                 "password": password
@@ -215,7 +204,7 @@ saisaLiveAdminApp.controller('tournamentHomeController', function ($scope, $http
 
     $http({
         method: 'GET',
-        url: 'http://localhost:8080/tournaments/participants/?tournamentId='+tournamentId
+        url: 'http://142.93.212.170:8080/saisa-live/tournaments/participants/?tournamentId='+tournamentId
     }).then(function successCallback(response) {
         $scope.tournamentData = response.data;
         console.log($scope.tournamentData);
@@ -234,7 +223,7 @@ saisaLiveAdminApp.controller('tournamentHomeController', function ($scope, $http
 
         $http({
             method: 'POST',
-            url: 'http://localhost:8080/tournaments/participant/edit?participantId='+$scope.tournamentData.pools[pool].participants[participantId].id,
+            url: 'http://142.93.212.170:8080/saisa-live/tournaments/participant/edit?participantId='+$scope.tournamentData.pools[pool].participants[participantId].id,
             data: {
                 "active": $scope.tournamentData.pools[pool].participants[participantId].active,
                 "games": $scope.tournamentData.pools[pool].participants[participantId].games,
@@ -259,7 +248,7 @@ saisaLiveAdminApp.controller('tournamentHomeController', function ($scope, $http
     $scope.addTeam = function(pool1){
 
 
-        window.location.href = 'http://localhost/admin-saisa-live/#!/edit-participant?pool='+$scope.tournamentData.pools[pool1].pool;
+        window.location.href = 'http://142.93.212.170/admin-saisa-live/#!/edit-participant?pool='+$scope.tournamentData.pools[pool1].pool;
 
     }
 
@@ -275,7 +264,7 @@ saisaLiveAdminApp.controller('tournamentHomeController', function ($scope, $http
     };
     $scope.editTournament = function () {
 
-        window.location.replace("http://localhost/admin-saisa-live/#!/edit-tournament?id="+tournamentId);
+        window.location.replace("http://142.93.212.170/admin-saisa-live/#!/edit-tournament?id="+tournamentId);
 
     };
 
@@ -310,7 +299,7 @@ saisaLiveAdminApp.controller('liveStreamHomeController', function ($scope, $http
 
     $http({
         method: 'GET',
-        url: 'http://localhost:8080/tournaments?tournamentId='+tournamentId
+        url: 'http://142.93.212.170:8080/saisa-live/tournaments?tournamentId='+tournamentId
     }).then(function successCallback(response) {
         $scope.tournamentData = response.data;
         console.log($scope.tournamentData);
@@ -327,7 +316,7 @@ saisaLiveAdminApp.controller('liveStreamHomeController', function ($scope, $http
 
     $http({
         method: 'GET',
-        url: 'http://localhost:8080/livestreams?tournamentId='+tournamentId
+        url: 'http://142.93.212.170:8080/saisa-live/livestreams?tournamentId='+tournamentId
     }).then(function successCallback(response) {
         $scope.liveStreamData = response.data;
         console.log($scope.liveStreamData);
@@ -343,7 +332,7 @@ saisaLiveAdminApp.controller('liveStreamHomeController', function ($scope, $http
 
         $http({
             method: 'POST',
-            url: 'http://localhost:8080/livestreams/edit?livestreamId='+$scope.liveStreamData[liveIndex].id,
+            url: 'http://142.93.212.170:8080/saisa-live/livestreams/edit?livestreamId='+$scope.liveStreamData[liveIndex].id,
             data: {
                 "active": $scope.liveStreamData[liveIndex].active,
                 "description": $scope.liveStreamData[liveIndex].description,
@@ -378,7 +367,7 @@ saisaLiveAdminApp.controller('liveStreamHomeController', function ($scope, $http
 
     $scope.home = function () {
 
-        window.location.replace("http://localhost/admin-saisa-live/#!/tournament-home?id="+tournamentId);
+        window.location.replace("http://142.93.212.170/admin-saisa-live/#!/tournament-home?id="+tournamentId);
 
     };
 
@@ -403,7 +392,7 @@ saisaLiveAdminApp.controller('mediaHomeController', function ($scope, $http, $st
 
     $http({
         method: 'GET',
-        url: 'http://localhost:8080/tournaments?tournamentId=' + tournamentId
+        url: 'http://142.93.212.170:8080/saisa-live/tournaments?tournamentId=' + tournamentId
     }).then(function successCallback(response) {
         $scope.tournamentData = response.data;
         console.log($scope.tournamentData);
@@ -418,7 +407,7 @@ saisaLiveAdminApp.controller('mediaHomeController', function ($scope, $http, $st
 
     $http({
         method: 'GET',
-        url: 'http://localhost:8080/media?tournamentId='+tournamentId+'&type='+1
+        url: 'http://142.93.212.170:8080/saisa-live/media?tournamentId='+tournamentId+'&type='+1
     }).then(function successCallback(response) {
         $scope.photos = response.data;
 
@@ -441,7 +430,7 @@ saisaLiveAdminApp.controller('mediaHomeController', function ($scope, $http, $st
 
     $http({
         method: 'GET',
-        url: 'http://localhost:8080/media?tournamentId='+tournamentId+'&type='+2
+        url: 'http://142.93.212.170:8080/saisa-live/media?tournamentId='+tournamentId+'&type='+2
     }).then(function successCallback(response) {
         $scope.videos = response.data;
 
@@ -463,7 +452,7 @@ saisaLiveAdminApp.controller('mediaHomeController', function ($scope, $http, $st
 
     $http({
         method: 'GET',
-        url: 'http://localhost:8080/media?tournamentId='+tournamentId+'&type='+3
+        url: 'http://142.93.212.170:8080/saisa-live/media?tournamentId='+tournamentId+'&type='+3
     }).then(function successCallback(response) {
         $scope.news = response.data;
 
@@ -487,7 +476,7 @@ saisaLiveAdminApp.controller('mediaHomeController', function ($scope, $http, $st
 
         $http({
             method: 'POST',
-            url: 'http://localhost:8080/media/edit?mediaId='+$scope.photos[photoIndex].id,
+            url: 'http://142.93.212.170:8080/saisa-live/media/edit?mediaId='+$scope.photos[photoIndex].id,
             data: {
                 "active": $scope.photos[photoIndex].active,
                 "contentUrl": $scope.photos[photoIndex].contentUrl,
@@ -512,7 +501,7 @@ saisaLiveAdminApp.controller('mediaHomeController', function ($scope, $http, $st
 
         $http({
             method: 'POST',
-            url: 'http://localhost:8080/media/edit?mediaId='+$scope.videos[videoIndex].id,
+            url: 'http://142.93.212.170:8080/saisa-live/media/edit?mediaId='+$scope.videos[videoIndex].id,
             data: {
                 "active": $scope.videos[videoIndex].active,
                 "contentUrl": $scope.videos[videoIndex].contentUrl,
@@ -537,7 +526,7 @@ saisaLiveAdminApp.controller('mediaHomeController', function ($scope, $http, $st
 
         $http({
             method: 'POST',
-            url: 'http://localhost:8080/media/edit?mediaId='+$scope.news[newsIndex].id,
+            url: 'http://142.93.212.170:8080/saisa-live/media/edit?mediaId='+$scope.news[newsIndex].id,
             data: {
                 "active": $scope.news[newsIndex].active,
                 "contentUrl": $scope.news[newsIndex].contentUrl,
@@ -580,19 +569,19 @@ saisaLiveAdminApp.controller('mediaHomeController', function ($scope, $http, $st
             window.open($scope.videos[contentIndex].contentUrl);
 
         }else if(type==3){
-            window.location.replace("http://localhost/admin-saisa-live/#!/edit-media?id="+$scope.news[contentIndex].id);
+            window.location.replace("http://142.93.212.170/admin-saisa-live/#!/edit-media?id="+$scope.news[contentIndex].id);
 
         }
     };
 
     $scope.addMedia = function(type){
-        window.location.replace("http://localhost/admin-saisa-live/#!/edit-media?mediaType="+type);
+        window.location.replace("http://142.93.212.170/admin-saisa-live/#!/edit-media?mediaType="+type);
     };
 
 
     $scope.home = function () {
 
-        window.location.replace("http://localhost/admin-saisa-live/#!/tournament-home?id="+tournamentId);
+        window.location.replace("http://142.93.212.170/admin-saisa-live/#!/tournament-home?id="+tournamentId);
 
     };
 
@@ -615,7 +604,7 @@ saisaLiveAdminApp.controller('gamesHomeController', function ($scope, $http, $st
 
     $http({
         method: 'GET',
-        url: 'http://localhost:8080/tournaments?tournamentId=' + tournamentId
+        url: 'http://142.93.212.170:8080/saisa-live/tournaments?tournamentId=' + tournamentId
     }).then(function successCallback(response) {
         $scope.tournamentData = response.data;
         console.log($scope.tournamentData);
@@ -630,7 +619,7 @@ saisaLiveAdminApp.controller('gamesHomeController', function ($scope, $http, $st
 
     $http({
         method: 'GET',
-        url: 'http://localhost:8080/games?activeStatus=1&tournamentId='+tournamentId
+        url: 'http://142.93.212.170:8080/saisa-live/games?activeStatus=1&tournamentId='+tournamentId
     }).then(function successCallback(response) {
         $scope.liveGames = response.data;
 
@@ -642,7 +631,7 @@ saisaLiveAdminApp.controller('gamesHomeController', function ($scope, $http, $st
 
     $http({
         method: 'GET',
-        url: 'http://localhost:8080/games?activeStatus=0&tournamentId='+tournamentId
+        url: 'http://142.93.212.170:8080/saisa-live/games?activeStatus=0&tournamentId='+tournamentId
     }).then(function successCallback(response) {
         $scope.upcomingGames = response.data;
 
@@ -654,7 +643,7 @@ saisaLiveAdminApp.controller('gamesHomeController', function ($scope, $http, $st
 
     $http({
         method: 'GET',
-        url: 'http://localhost:8080/games?activeStatus=2&tournamentId='+tournamentId
+        url: 'http://142.93.212.170:8080/saisa-live/games?activeStatus=2&tournamentId='+tournamentId
     }).then(function successCallback(response) {
         $scope.completedGames = response.data;
 
@@ -666,7 +655,7 @@ saisaLiveAdminApp.controller('gamesHomeController', function ($scope, $http, $st
 
     $http({
         method: 'GET',
-        url: 'http://localhost:8080/games?activeStatus=3&tournamentId='+tournamentId
+        url: 'http://142.93.212.170:8080/saisa-live/games?activeStatus=3&tournamentId='+tournamentId
     }).then(function successCallback(response) {
         $scope.inactiveGames = response.data;
 
@@ -681,7 +670,7 @@ saisaLiveAdminApp.controller('gamesHomeController', function ($scope, $http, $st
 
         $http({
             method: 'POST',
-            url: 'http://localhost:8080/games/status?gameId='+$scope.liveGames[liveIndex].id+'&newStatus='+$scope.liveGames[liveIndex].activeStatus,
+            url: 'http://142.93.212.170:8080/saisa-live/games/status?gameId='+$scope.liveGames[liveIndex].id+'&newStatus='+$scope.liveGames[liveIndex].activeStatus,
 
         }).then(function successCallback(response) {
             alert('Databases Successfully Updated');
@@ -700,7 +689,7 @@ saisaLiveAdminApp.controller('gamesHomeController', function ($scope, $http, $st
 
         $http({
             method: 'POST',
-            url: 'http://localhost:8080/games/status?gameId='+$scope.upcomingGames[upcomingIndex].id+'&newStatus='+$scope.upcomingGames[upcomingIndex].activeStatus,
+            url: 'http://142.93.212.170:8080/saisa-live/games/status?gameId='+$scope.upcomingGames[upcomingIndex].id+'&newStatus='+$scope.upcomingGames[upcomingIndex].activeStatus,
 
         }).then(function successCallback(response) {
             alert('Databases Successfully Updated');
@@ -719,12 +708,12 @@ saisaLiveAdminApp.controller('gamesHomeController', function ($scope, $http, $st
 
         $http({
             method: 'POST',
-            url: 'http://localhost:8080/games/result?gameId='+$scope.completedGames[completedIndex].id+'&result='+$scope.completedGames[completedIndex].result,
+            url: 'http://142.93.212.170:8080/saisa-live/games/result?gameId='+$scope.completedGames[completedIndex].id+'&result='+$scope.completedGames[completedIndex].result,
 
         }).then(function successCallback(response) {
             $http({
                 method: 'POST',
-                url: 'http://localhost:8080/games/status?gameId='+$scope.completedGames[completedIndex].id+'&newStatus='+$scope.completedGames[completedIndex].activeStatus,
+                url: 'http://142.93.212.170:8080/saisa-live/games/status?gameId='+$scope.completedGames[completedIndex].id+'&newStatus='+$scope.completedGames[completedIndex].activeStatus,
 
             }).then(function successCallback(response) {
                 alert('Databases Successfully Updated');
@@ -750,12 +739,12 @@ saisaLiveAdminApp.controller('gamesHomeController', function ($scope, $http, $st
 
         $http({
             method: 'POST',
-            url: 'http://localhost:8080/games/result?gameId='+$scope.inactiveGames[inactiveIndex].id+'&result='+$scope.inactiveGames[inactiveIndex].result,
+            url: 'http://142.93.212.170:8080/saisa-live/games/result?gameId='+$scope.inactiveGames[inactiveIndex].id+'&result='+$scope.inactiveGames[inactiveIndex].result,
 
         }).then(function successCallback(response) {
             $http({
                 method: 'POST',
-                url: 'http://localhost:8080/games/status?gameId='+$scope.inactiveGames[inactiveIndex].id+'&newStatus='+$scope.inactiveGames[inactiveIndex].activeStatus,
+                url: 'http://142.93.212.170:8080/saisa-live/games/status?gameId='+$scope.inactiveGames[inactiveIndex].id+'&newStatus='+$scope.inactiveGames[inactiveIndex].activeStatus,
 
             }).then(function successCallback(response) {
                 alert('Databases Successfully Updated');
@@ -794,13 +783,13 @@ saisaLiveAdminApp.controller('gamesHomeController', function ($scope, $http, $st
 
     $scope.home = function () {
 
-        window.location.replace("http://localhost/admin-saisa-live/#!/tournament-home?id="+tournamentId);
+        window.location.replace("http://142.93.212.170/admin-saisa-live/#!/tournament-home?id="+tournamentId);
 
     };
 
     $scope.editGames = function (gameId) {
 
-        window.location.replace("http://localhost/admin-saisa-live/#!/edit-games?id="+gameId);
+        window.location.replace("http://142.93.212.170/admin-saisa-live/#!/edit-games?id="+gameId);
 
     };
 
@@ -809,7 +798,7 @@ saisaLiveAdminApp.controller('gamesHomeController', function ($scope, $http, $st
     };
 
     $scope.startScoring = function(gameId){
-        window.location.replace("http://localhost/admin-saisa-live/#!/score?id="+gameId);
+        window.location.replace("http://142.93.212.170/admin-saisa-live/#!/score?id="+gameId);
     }
 
     $scope.logout = function () {
@@ -837,7 +826,7 @@ saisaLiveAdminApp.controller('editGamesController', function ($scope, $http, $st
 
         $http({
             method: 'GET',
-            url: 'http://localhost:8080/games?gameId=' + $stateParams.id
+            url: 'http://142.93.212.170:8080/saisa-live/games?gameId=' + $stateParams.id
         }).then(function successCallback(response) {
 
             $scope.gameData = response.data;
@@ -865,7 +854,7 @@ saisaLiveAdminApp.controller('editGamesController', function ($scope, $http, $st
 
     $http({
         method: 'GET',
-        url: 'http://localhost:8080/tournaments?tournamentId=' + tournamentId
+        url: 'http://142.93.212.170:8080/saisa-live/tournaments?tournamentId=' + tournamentId
     }).then(function successCallback(response) {
         $scope.tournamentData = response.data;
         console.log($scope.tournamentData);
@@ -880,7 +869,7 @@ saisaLiveAdminApp.controller('editGamesController', function ($scope, $http, $st
 
     $http({
         method: 'GET',
-        url: 'http://localhost:8080/tournaments/participants/minified?tournamentId=' + tournamentId
+        url: 'http://142.93.212.170:8080/saisa-live/tournaments/participants/minified?tournamentId=' + tournamentId
     }).then(function successCallback(response) {
 
         $scope.teams = response.data;
@@ -894,7 +883,7 @@ saisaLiveAdminApp.controller('editGamesController', function ($scope, $http, $st
 
     $http({
         method: 'GET',
-        url: 'http://localhost:8080/livestreams?tournamentId=' + tournamentId
+        url: 'http://142.93.212.170:8080/saisa-live/livestreams?tournamentId=' + tournamentId
     }).then(function successCallback(response) {
 
         $scope.livestreams = response.data;
@@ -913,7 +902,7 @@ saisaLiveAdminApp.controller('editGamesController', function ($scope, $http, $st
 
             $http({
                 method: 'POST',
-                url: 'http://localhost:8080/games/new',
+                url: 'http://142.93.212.170:8080/saisa-live/games/new',
                 data: {
                     "activeStatus": parseInt($scope.mActiveStatus),
                     "gameDescription": $scope.gameDescription,
@@ -929,7 +918,7 @@ saisaLiveAdminApp.controller('editGamesController', function ($scope, $http, $st
                 }
             }).then(function successCallback(response) {
                 alert('Databases Successfully Updated');
-                window.location.replace("http://localhost/admin-saisa-live/#!/games");
+                window.location.replace("http://142.93.212.170/admin-saisa-live/#!/games");
 
 
             }, function errorCallback(response) {
@@ -941,7 +930,7 @@ saisaLiveAdminApp.controller('editGamesController', function ($scope, $http, $st
         }else{
             $http({
                 method: 'POST',
-                url: 'http://localhost:8080/games/edit?gameId='+$stateParams.id,
+                url: 'http://142.93.212.170:8080/saisa-live/games/edit?gameId='+$stateParams.id,
                 data: {
                     "activeStatus": parseInt($scope.mActiveStatus),
                     "gameDescription": $scope.gameDescription,
@@ -957,7 +946,7 @@ saisaLiveAdminApp.controller('editGamesController', function ($scope, $http, $st
                 }
             }).then(function successCallback(response) {
                 alert('Databases Successfully Updated');
-                window.location.replace("http://localhost/admin-saisa-live/#!/games");
+                window.location.replace("http://142.93.212.170/admin-saisa-live/#!/games");
 
 
             }, function errorCallback(response) {
@@ -972,7 +961,7 @@ saisaLiveAdminApp.controller('editGamesController', function ($scope, $http, $st
 
     $scope.back = function () {
 
-        window.location.replace("http://localhost/admin-saisa-live/#!/games");
+        window.location.replace("http://142.93.212.170/admin-saisa-live/#!/games");
 
     };
 
@@ -998,7 +987,7 @@ saisaLiveAdminApp.controller('scoreGamesController', function ($scope, $http, $s
     if($stateParams.id!=null) {
         $http({
             method: 'GET',
-            url: 'http://localhost:8080/games?gameId=' + $stateParams.id
+            url: 'http://142.93.212.170:8080/saisa-live/games?gameId=' + $stateParams.id
         }).then(function successCallback(response) {
 
             $scope.gameData = response.data;
@@ -1013,7 +1002,7 @@ saisaLiveAdminApp.controller('scoreGamesController', function ($scope, $http, $s
             if($scope.gameData[0].activeStatus===0){
                 $http({
                     method: 'POST',
-                    url: 'http://localhost:8080/games/status?gameId='+$stateParams.id+'&newStatus='+1,
+                    url: 'http://142.93.212.170:8080/saisa-live/games/status?gameId='+$stateParams.id+'&newStatus='+1,
 
                 }).then(function successCallback(response) {
                     $scope.gameData[0].activeStatus=1;
@@ -1039,13 +1028,13 @@ saisaLiveAdminApp.controller('scoreGamesController', function ($scope, $http, $s
         });
 
     }else{
-        window.location.replace("http://localhost/admin-saisa-live/#!/games");
+        window.location.replace("http://142.93.212.170/admin-saisa-live/#!/games");
 
     }
 
     $http({
         method: 'GET',
-        url: 'http://localhost:8080/tournaments?tournamentId=' + tournamentId
+        url: 'http://142.93.212.170:8080/saisa-live/tournaments?tournamentId=' + tournamentId
     }).then(function successCallback(response) {
         $scope.tournamentData = response.data;
         console.log($scope.tournamentData);
@@ -1062,7 +1051,7 @@ saisaLiveAdminApp.controller('scoreGamesController', function ($scope, $http, $s
 
         $http({
             method: 'POST',
-            url: 'http://localhost:8080/games/scores?gameId='+$stateParams.id+'&t1Score='+$scope.team1Score+'&t2Score='+$scope.team2Score,
+            url: 'http://142.93.212.170:8080/saisa-live/games/scores?gameId='+$stateParams.id+'&t1Score='+$scope.team1Score+'&t2Score='+$scope.team2Score,
 
         }).then(function successCallback(response) {
             alert('Databases Successfully Updated');
@@ -1083,16 +1072,16 @@ saisaLiveAdminApp.controller('scoreGamesController', function ($scope, $http, $s
     $scope.saveResult = function(){
         $http({
             method: 'POST',
-            url: 'http://localhost:8080/games/result?gameId='+$stateParams.id+'&result='+parseInt($scope.result)
+            url: 'http://142.93.212.170:8080/saisa-live/games/result?gameId='+$stateParams.id+'&result='+parseInt($scope.result)
 
         }).then(function successCallback(response) {
             $http({
                 method: 'POST',
-                url: 'http://localhost:8080/games/status?gameId='+$stateParams.id+'&newStatus=2',
+                url: 'http://142.93.212.170:8080/saisa-live/games/status?gameId='+$stateParams.id+'&newStatus=2',
 
             }).then(function successCallback(response) {
                 alert('Databases Successfully Updated. You can update standings in the next page');
-                window.location.replace("http://localhost/admin-saisa-live/#!/tournament-home?id="+tournamentId);
+                window.location.replace("http://142.93.212.170/admin-saisa-live/#!/tournament-home?id="+tournamentId);
 
 
             }, function errorCallback(response) {
@@ -1112,7 +1101,7 @@ saisaLiveAdminApp.controller('scoreGamesController', function ($scope, $http, $s
 
     $scope.back = function () {
 
-        window.location.replace("http://localhost/admin-saisa-live/#!/games");
+        window.location.replace("http://142.93.212.170/admin-saisa-live/#!/games");
 
     };
 
@@ -1149,7 +1138,7 @@ saisaLiveAdminApp.controller('editMediaController', function ($scope, $http, $st
         $scope.typeSelected=true;
         $http({
             method: 'GET',
-            url: 'http://localhost:8080/media?mediaId='+$stateParams.id+'&tournamentId=0&type=0'
+            url: 'http://142.93.212.170:8080/saisa-live/media?mediaId='+$stateParams.id+'&tournamentId=0&type=0'
         }).then(function successCallback(response) {
             $scope.mediaData = response.data;
 
@@ -1194,7 +1183,7 @@ saisaLiveAdminApp.controller('editMediaController', function ($scope, $http, $st
         if($scope.editMedia){
             $http({
                 method: 'POST',
-                url: 'http://localhost:8080/media/edit?mediaId='+$stateParams.id,
+                url: 'http://142.93.212.170:8080/saisa-live/media/edit?mediaId='+$stateParams.id,
                 data: {
                     "active": $scope.active,
                     "contentUrl": $scope.contentUrl,
@@ -1206,7 +1195,7 @@ saisaLiveAdminApp.controller('editMediaController', function ($scope, $http, $st
                 }
             }).then(function successCallback(response) {
                 alert('Databases Successfully Updated');
-                window.location.replace("http://localhost/admin-saisa-live/#!/media");
+                window.location.replace("http://142.93.212.170/admin-saisa-live/#!/media");
 
 
             }, function errorCallback(response) {
@@ -1219,7 +1208,7 @@ saisaLiveAdminApp.controller('editMediaController', function ($scope, $http, $st
         if($scope.newMedia){
             $http({
                 method: 'POST',
-                url: 'http://localhost:8080/media/new',
+                url: 'http://142.93.212.170:8080/saisa-live/media/new',
                 data: {
                     "active": $scope.active,
                     "contentUrl": $scope.contentUrl,
@@ -1231,7 +1220,7 @@ saisaLiveAdminApp.controller('editMediaController', function ($scope, $http, $st
                 }
             }).then(function successCallback(response) {
                 alert('Databases Successfully Updated');
-                window.location.replace("http://localhost/admin-saisa-live/#!/media");
+                window.location.replace("http://142.93.212.170/admin-saisa-live/#!/media");
 
 
             }, function errorCallback(response) {
@@ -1246,7 +1235,7 @@ saisaLiveAdminApp.controller('editMediaController', function ($scope, $http, $st
 
     $http({
         method: 'GET',
-        url: 'http://localhost:8080/tournaments?tournamentId='+tournamentId
+        url: 'http://142.93.212.170:8080/saisa-live/tournaments?tournamentId='+tournamentId
     }).then(function successCallback(response) {
         $scope.tournamentData = response.data;
         console.log($scope.tournamentData);
@@ -1261,7 +1250,7 @@ saisaLiveAdminApp.controller('editMediaController', function ($scope, $http, $st
 
     $scope.home = function () {
 
-        window.location.replace("http://localhost/admin-saisa-live/#!/tournament-home?id="+tournamentId);
+        window.location.replace("http://142.93.212.170/admin-saisa-live/#!/tournament-home?id="+tournamentId);
 
     };
 
@@ -1274,7 +1263,7 @@ saisaLiveAdminApp.controller('addLiveController', function ($scope, $http, $stat
 
     $http({
         method: 'GET',
-        url: 'http://localhost:8080/tournaments?tournamentId='+tournamentId
+        url: 'http://142.93.212.170:8080/saisa-live/tournaments?tournamentId='+tournamentId
     }).then(function successCallback(response) {
         $scope.tournamentData = response.data;
         console.log($scope.tournamentData);
@@ -1290,7 +1279,7 @@ saisaLiveAdminApp.controller('addLiveController', function ($scope, $http, $stat
     $scope.addLive = function () {
         $http({
             method: 'POST',
-            url: 'http://localhost:8080/livestreams/new',
+            url: 'http://142.93.212.170:8080/saisa-live/livestreams/new',
             data: {
                 "active": $scope.activeStatus,
                 "description": $scope.description,
@@ -1300,7 +1289,7 @@ saisaLiveAdminApp.controller('addLiveController', function ($scope, $http, $stat
             }
         }).then(function successCallback(response) {
             alert('Databases Successfully Updated');
-            window.location.replace("http://localhost/admin-saisa-live/#!/livestream");
+            window.location.replace("http://142.93.212.170/admin-saisa-live/#!/livestream");
 
 
         }, function errorCallback(response) {
@@ -1324,7 +1313,7 @@ saisaLiveAdminApp.controller('addLiveController', function ($scope, $http, $stat
 
     $scope.home = function () {
 
-        window.location.replace("http://localhost/admin-saisa-live/#!/tournament-home?id="+tournamentId);
+        window.location.replace("http://142.93.212.170/admin-saisa-live/#!/tournament-home?id="+tournamentId);
 
     };
 
@@ -1340,7 +1329,7 @@ saisaLiveAdminApp.controller('editParticipantController', function ($scope, $htt
 
     $http({
         method: 'GET',
-        url: 'http://localhost:8080/tournaments/participants/?tournamentId='+tournamentId
+        url: 'http://142.93.212.170:8080/saisa-live/tournaments/participants/?tournamentId='+tournamentId
     }).then(function successCallback(response) {
         $scope.tournamentData = response.data;
 
@@ -1353,7 +1342,7 @@ saisaLiveAdminApp.controller('editParticipantController', function ($scope, $htt
 
     $http({
         method: 'GET',
-        url: 'http://localhost:8080/teams?teamId=0'
+        url: 'http://142.93.212.170:8080/saisa-live/teams?teamId=0'
     }).then(function successCallback(response) {
         $scope.teams = response.data;
 
@@ -1369,7 +1358,7 @@ saisaLiveAdminApp.controller('editParticipantController', function ($scope, $htt
     $scope.addParticipant = function () {
         $http({
             method: 'POST',
-            url: 'http://localhost:8080/tournaments/participant/new',
+            url: 'http://142.93.212.170:8080/saisa-live/tournaments/participant/new',
             data: {
                 "games": 0,
                 "losses": 0,
@@ -1384,7 +1373,7 @@ saisaLiveAdminApp.controller('editParticipantController', function ($scope, $htt
             }
         }).then(function successCallback(response) {
             alert('Databases Successfully Updated');
-            window.location.replace("http://localhost/admin-saisa-live/#!/tournament-home?id="+tournamentId);
+            window.location.replace("http://142.93.212.170/admin-saisa-live/#!/tournament-home?id="+tournamentId);
 
 
         }, function errorCallback(response) {
@@ -1408,7 +1397,7 @@ saisaLiveAdminApp.controller('editParticipantController', function ($scope, $htt
 
     $scope.home = function () {
 
-        window.location.replace("http://localhost/admin-saisa-live/#!/tournament-home?id="+tournamentId);
+        window.location.replace("http://142.93.212.170/admin-saisa-live/#!/tournament-home?id="+tournamentId);
     };
 });
 
@@ -1425,7 +1414,7 @@ saisaLiveAdminApp.controller('editTournamentController', function ($scope, $http
 
         $http({
             method: 'GET',
-            url: 'http://localhost:8080/tournaments?tournamentId='+tournamentId
+            url: 'http://142.93.212.170:8080/saisa-live/tournaments?tournamentId='+tournamentId
         }).then(function successCallback(response) {
             $scope.tournamentData = response.data;
 
@@ -1440,7 +1429,7 @@ saisaLiveAdminApp.controller('editTournamentController', function ($scope, $http
 
     $http({
         method: 'GET',
-        url: 'http://localhost:8080/sports?sportId=0'
+        url: 'http://142.93.212.170:8080/saisa-live/sports?sportId=0'
     }).then(function successCallback(response) {
         $scope.sportData = response.data;
     }, function errorCallback(response) {
@@ -1455,7 +1444,7 @@ saisaLiveAdminApp.controller('editTournamentController', function ($scope, $http
         if($stateParams.id!=null){
             $http({
                 method: 'POST',
-                url: 'http://localhost:8080/tournaments/edit?tournamentId='+$stateParams.id,
+                url: 'http://142.93.212.170:8080/saisa-live/tournaments/edit?tournamentId='+$stateParams.id,
                 data: {
                     "endDate": $scope.tournamentData.endDate,
                     "location": $scope.tournamentData.location,
@@ -1473,11 +1462,11 @@ saisaLiveAdminApp.controller('editTournamentController', function ($scope, $http
 
                 $http({
                     method: 'POST',
-                    url: 'http://localhost:8080/tournaments/status?newStatus=+'+$scope.tournamentData.active+'+&tournamentId='+tournamentId,
+                    url: 'http://142.93.212.170:8080/saisa-live/tournaments/status?newStatus=+'+$scope.tournamentData.active+'+&tournamentId='+tournamentId,
                 }).then(function successCallback(response) {
 
                     alert('Databases Successfully Updated');
-                    window.location.replace("http://localhost/admin-saisa-live/#!/tournament-home?id="+tournamentId);
+                    window.location.replace("http://142.93.212.170/admin-saisa-live/#!/tournament-home?id="+tournamentId);
 
 
                 }, function errorCallback(response) {
@@ -1495,7 +1484,7 @@ saisaLiveAdminApp.controller('editTournamentController', function ($scope, $http
         }else{
             $http({
                 method: 'POST',
-                url: 'http://localhost:8080/tournaments/new',
+                url: 'http://142.93.212.170:8080/saisa-live/tournaments/new',
                 data: {
                     "endDate": $scope.tournamentData.endDate,
                     "location": $scope.tournamentData.location,
@@ -1510,13 +1499,10 @@ saisaLiveAdminApp.controller('editTournamentController', function ($scope, $http
                     "url": $scope.tournamentData.url
                 }
             }).then(function successCallback(response) {
-
                 alert('Databases Successfully Updated');
-                window.location.replace("http://localhost/admin-saisa-live/#!/admin-home");
-
+                window.location.replace("http://142.93.212.170/admin-saisa-live/#!/admin-home");
 
             }, function errorCallback(response) {
-                // The next bit of code is asynchronously tricky.
                 alert("We encountered an error while saving your information.");
                 console.log(response)
             });
@@ -1527,7 +1513,7 @@ saisaLiveAdminApp.controller('editTournamentController', function ($scope, $http
     $scope.home = function () {
 
         if($scope.editTournament==true) {
-            window.location.replace("http://localhost/admin-saisa-live/#!/tournament-home?id=" + tournamentId);
+            window.location.replace("http://142.93.212.170/admin-saisa-live/#!/tournament-home?id=" + tournamentId);
         }else{
             $state.go("admin");
         }
@@ -1550,12 +1536,9 @@ saisaLiveAdminApp.controller('adminHomeController', function ($scope, $http, $st
 
     $http({
         method: 'GET',
-        url: 'http://localhost:8080/tournaments?tournamentId=' + 0
+        url: 'http://142.93.212.170:8080/saisa-live/tournaments?tournamentId=' + 0
     }).then(function successCallback(response) {
         $scope.activeTournaments = response.data;
-
-
-
     }, function errorCallback(response) {
         // The next bit of code is asynchronously tricky.
         alert("We encountered an error while retrieving your data");
@@ -1566,7 +1549,7 @@ saisaLiveAdminApp.controller('adminHomeController', function ($scope, $http, $st
 
     $http({
         method: 'GET',
-        url: 'http://localhost:8080/tournaments/inactive'
+        url: 'http://142.93.212.170:8080/saisa-live/tournaments/inactive'
     }).then(function successCallback(response) {
         $scope.inActiveTournaments = response.data;
 
@@ -1579,7 +1562,7 @@ saisaLiveAdminApp.controller('adminHomeController', function ($scope, $http, $st
     });
 
     $scope.manageTournament = function(id){
-        window.location.replace("http://localhost/admin-saisa-live/#!/tournament-home?id=" + id);
+        window.location.replace("http://142.93.212.170/admin-saisa-live/#!/tournament-home?id=" + id);
 
     };
 
@@ -1589,7 +1572,7 @@ saisaLiveAdminApp.controller('adminHomeController', function ($scope, $http, $st
     };
 
     $scope.manageAdminAccounts = function(id){
-        window.location.replace("http://localhost/admin-saisa-live/#!/admin-accounts?tournamentId=" + id);
+        window.location.replace("http://142.93.212.170/admin-saisa-live/#!/admin-accounts?tournamentId=" + id);
     };
 
     $scope.logout = function () {
@@ -1615,7 +1598,7 @@ saisaLiveAdminApp.controller('accountsHomeController', function ($scope, $http, 
 
     $http({
         method: 'GET',
-        url: 'http://localhost:8080/tournaments?tournamentId='+tournamentId
+        url: 'http://142.93.212.170:8080/saisa-live/tournaments?tournamentId='+tournamentId
     }).then(function successCallback(response) {
         $scope.tournamentData = response.data;
         console.log($scope.tournamentData);
@@ -1631,7 +1614,7 @@ saisaLiveAdminApp.controller('accountsHomeController', function ($scope, $http, 
 
     $http({
         method: 'GET',
-        url: 'http://localhost:8080/admin?tournamentId='+tournamentId
+        url: 'http://142.93.212.170:8080/saisa-live/admin?tournamentId='+tournamentId
     }).then(function successCallback(response) {
         $scope.adminAccountData = response.data;
 
@@ -1643,11 +1626,11 @@ saisaLiveAdminApp.controller('accountsHomeController', function ($scope, $http, 
     });
 
     $scope.createAccount = function(){
-        window.location.replace("http://localhost/admin-saisa-live/#!/edit-account?tournamentId="+tournamentId);
+        window.location.replace("http://142.93.212.170/admin-saisa-live/#!/edit-account?tournamentId="+tournamentId);
     };
 
     $scope.editCredentials = function(id, username){
-        window.location.replace("http://localhost/admin-saisa-live/#!/edit-account?tournamentId="+tournamentId+'&id='+id+'&username='+username);
+        window.location.replace("http://142.93.212.170/admin-saisa-live/#!/edit-account?tournamentId="+tournamentId+'&id='+id+'&username='+username);
 
     };
 
@@ -1690,7 +1673,7 @@ saisaLiveAdminApp.controller('editAdminAccountsController', function ($scope, $h
 
     $http({
         method: 'GET',
-        url: 'http://localhost:8080/tournaments?tournamentId='+tournamentId
+        url: 'http://142.93.212.170:8080/saisa-live/tournaments?tournamentId='+tournamentId
     }).then(function successCallback(response) {
         $scope.tournamentData = response.data;
 
@@ -1708,7 +1691,7 @@ saisaLiveAdminApp.controller('editAdminAccountsController', function ($scope, $h
         if($scope.editAccount === true){
             $http({
                 method: 'POST',
-                url: 'http://localhost:8080/admin/edit',
+                url: 'http://142.93.212.170:8080/saisa-live/admin/edit',
                 data: {
                     "active": $scope.activeStatus,
                     "creatorPassword": creatorPassword,
@@ -1720,7 +1703,7 @@ saisaLiveAdminApp.controller('editAdminAccountsController', function ($scope, $h
             }).then(function successCallback(response) {
 
                 alert('Databases Successfully Updated');
-                window.location.replace("http://localhost/admin-saisa-live/#!/admin-accounts?tournamentId="+tournamentId);
+                window.location.replace("http://142.93.212.170/admin-saisa-live/#!/admin-accounts?tournamentId="+tournamentId);
 
 
             }, function errorCallback(response) {
@@ -1731,7 +1714,7 @@ saisaLiveAdminApp.controller('editAdminAccountsController', function ($scope, $h
         }else{
             $http({
                 method: 'POST',
-                url: 'http://localhost:8080/admin/new',
+                url: 'http://142.93.212.170:8080/saisa-live/admin/new',
                 data: {
                     "active": $scope.activeStatus,
                     "creatorPassword": creatorPassword,
@@ -1743,7 +1726,7 @@ saisaLiveAdminApp.controller('editAdminAccountsController', function ($scope, $h
             }).then(function successCallback(response) {
 
                 alert('Databases Successfully Updated');
-                window.location.replace("http://localhost/admin-saisa-live/#!/admin-accounts?tournamentId="+tournamentId);
+                window.location.replace("http://142.93.212.170/admin-saisa-live/#!/admin-accounts?tournamentId="+tournamentId);
 
 
             }, function errorCallback(response) {
@@ -1767,7 +1750,7 @@ saisaLiveAdminApp.controller('editAdminAccountsController', function ($scope, $h
     };
 
     $scope.back = function(){
-        window.location.replace("http://localhost/admin-saisa-live/#!/admin-accounts?tournamentId=" + tournamentId);
+        window.location.replace("http://142.93.212.170/admin-saisa-live/#!/admin-accounts?tournamentId=" + tournamentId);
     }
 });
 
@@ -1777,7 +1760,7 @@ saisaLiveAdminApp.controller('loginController', function ($scope, $http, $cookie
     $scope.login = function () {
         $http({
             method: 'POST',
-            url: 'http://localhost:8080/admin/verify',
+            url: 'http://142.93.212.170:8080/saisa-live/admin/verify',
             data: {
                 "username": $scope.username,
                 "password": $scope.password
@@ -1785,30 +1768,21 @@ saisaLiveAdminApp.controller('loginController', function ($scope, $http, $cookie
         }).then(function successCallback(response) {
             $scope.response = response.data;
 
-            if($scope.response === ""){
+            if($scope.response === ""){         //Response is blank if the account has full access
                 console.log("admin");
-                $cookies.put("access", 0);
+                $cookies.put("access", 0);      //Access level is set to 0 if account has full access
                 $cookies.put("username", $scope.username);
                 $cookies.put("password", $scope.password);
 
                 $state.go('admin');
 
             }else{
-                $cookies.put("access", $scope.response.id);
+                $cookies.put("access", $scope.response.id);    //Response contains tournamentId user has access to if user only has tournament level access
                 $cookies.put("username", $scope.username);
                 $cookies.put("password", $scope.password);
-                window.location.replace("http://localhost/admin-saisa-live/#!/tournament-home?id="+$scope.response.id);
+                window.location.replace("http://142.93.212.170/admin-saisa-live/#!/tournament-home?id="+$scope.response.id);
 
             }
-            //
-            // $cookies.put("key", $scope.key);
-            // $cookies.put("uname", $scope.username);
-            // $cookies.put("password", $scope.password);
-            // $cookies.put("gameId", $scope.response);
-            //
-            // $state.go('home');
-
-
 
         }, function errorCallback(response) {
             // The next bit of code is asynchronously tricky.

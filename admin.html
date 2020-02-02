@@ -17,28 +17,19 @@
     <div align="left">
         <button style="font-size: large; display: inline-block; margin-right: 85%" ng-click="logout()">Logout</button>
 <!--        <button style="font-size: large; display: inline-block;" ng-click="editTournament()">Edit Tournament</button>-->
-
     </div>
     <h1>SAISA Live Admin Home</h1>
     <br><br>
-
     <div>
         <br><br>
-
         <h2>Currently Active Tournaments</h2>
-
         <br><br><br>
-
         <table style="width: 100%">
             <th style="font-size: 20pt">Name</th>
-
             <th style="font-size: 20pt">Start Date</th>
-
             <th style="font-size: 20pt">End Date</th>
             <th style="font-size: 20pt">Location</th>
             <th style="font-size: 20pt"></th>
-
-
             <th align="center">
                 <div>
                     <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
@@ -46,10 +37,7 @@
                         <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
                     </button>
                 </div>
-
             </th>
-
-
             <tr ng-repeat="items in activeTournaments" ng-class='{red : !items.active, green: items.active}'>
                 <td align="center" style="font-size: 20pt;"><b>{{items.name}}</b></td>
                 <td align="center"  style="font-size: 16pt;">{{items.startDate}}</td>
@@ -63,7 +51,6 @@
                         </button>
                     </div>
                 </td>
-
                 <td align="center">
                     <div>
                         <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
@@ -73,35 +60,21 @@
                     </div>
                 </td>
             </tr>
-
-
         </table>
     </div>
     <br><br><br>
-
     <div>
         <br><br>
-
         <h2>Past/Inactive Tournaments</h2>
-
         <br><br><br>
-
         <table style="width: 100%">
             <th style="font-size: 20pt">Name</th>
-
             <th style="font-size: 20pt">Start Date</th>
-
             <th style="font-size: 20pt">End Date</th>
             <th style="font-size: 20pt">Location</th>
             <th style="font-size: 20pt"></th>
-
-
             <th align="center">
-
-
             </th>
-
-
             <tr ng-repeat="items in inActiveTournaments" ng-class='{red : !items.active, green: items.active}'>
                 <td align="center" style="font-size: 20pt;"><b>{{items.name}}</b></td>
                 <td align="center"  style="font-size: 16pt;">{{items.startDate}}</td>
@@ -115,7 +88,6 @@
                         </button>
                     </div>
                 </td>
-
                 <td align="center">
                     <div>
                         <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
@@ -125,8 +97,6 @@
                     </div>
                 </td>
             </tr>
-
-
         </table>
     </div>
 </center>
