@@ -316,7 +316,7 @@ saisaLiveAdminApp.controller('liveStreamHomeController', function ($scope, $http
 
     $http({
         method: 'GET',
-        url: 'http://142.93.212.170:8080/saisa-live/livestreams?tournamentId='+tournamentId
+        url: 'http://142.93.212.170:8080/saisa-live/livestreams/admin?tournamentId='+tournamentId
     }).then(function successCallback(response) {
         $scope.liveStreamData = response.data;
         console.log($scope.liveStreamData);
