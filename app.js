@@ -407,7 +407,7 @@ saisaLiveAdminApp.controller('mediaHomeController', function ($scope, $http, $st
 
     $http({
         method: 'GET',
-        url: 'http://142.93.212.170:8080/saisa-live/media?tournamentId='+tournamentId+'&type='+1
+        url: 'http://142.93.212.170:8080/saisa-live/media/admin?tournamentId='+tournamentId+'&type='+1
     }).then(function successCallback(response) {
         $scope.photos = response.data;
 
@@ -430,7 +430,7 @@ saisaLiveAdminApp.controller('mediaHomeController', function ($scope, $http, $st
 
     $http({
         method: 'GET',
-        url: 'http://142.93.212.170:8080/saisa-live/media?tournamentId='+tournamentId+'&type='+2
+        url: 'http://142.93.212.170:8080/saisa-live/media/admin?tournamentId='+tournamentId+'&type='+2
     }).then(function successCallback(response) {
         $scope.videos = response.data;
 
@@ -452,7 +452,7 @@ saisaLiveAdminApp.controller('mediaHomeController', function ($scope, $http, $st
 
     $http({
         method: 'GET',
-        url: 'http://142.93.212.170:8080/saisa-live/media?tournamentId='+tournamentId+'&type='+3
+        url: 'http://142.93.212.170:8080/saisa-live/media/admin?tournamentId='+tournamentId+'&type='+3
     }).then(function successCallback(response) {
         $scope.news = response.data;
 
