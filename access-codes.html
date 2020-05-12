@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+<script src="assets/js/index.js"></script>
+
+<script src="app.js"></script>
+<link rel="stylesheet" href="assets/css/style.css">
+
+<link rel="shortcut icon" href="assets/favicon.jpg">
+<head>
+    <meta charset="UTF-8">
+    <title>SAISA Live - Access Codes</title>
+</head>
+<body>
+<center>
+
+    <div align="left">
+        <button style="font-size: large; display: inline-block; margin-right: 85%" ng-click="logout()">Logout</button>
+        <button style="font-size: large; display: inline-block;" ng-click="adminHome()">Admin Home</button>
+
+    </div>
+    <h1>Access Codes for Photos</h1>
+    <h2 style="color: #17376e">SAISA Live Admin Dashboard</h2>
+    <br><br>
+<!--    <div>-->
+<!--        <div class="col-md-4">-->
+<!--            <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"-->
+<!--                    ng-click="startScoring()">Manage Games/Scoring-->
+<!--                <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>-->
+<!--            </button>-->
+<!--        </div>-->
+<!--        <div class="col-md-4">-->
+<!--            <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"-->
+<!--                    ng-click="startScoring()">Manage Livestreams-->
+<!--                <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>-->
+<!--            </button>-->
+<!--        </div>-->
+<!--        <div class="col-md-4">-->
+<!--            <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"-->
+<!--                    ng-click="startScoring()">Manage Media-->
+<!--                <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>-->
+<!--            </button>-->
+<!--        </div>-->
+<!--    </div>-->
+
+    <br><br>
+    <div>
+
+        <table style="width: 100%">
+            <th style="font-size: 20pt">Group Name</th>
+            <th style="font-size: 20pt">Access Code(10 Characters Max.)</th>
+
+            <th style="font-size: 20pt">Active Status</th>
+
+
+            <th align="center">
+                <div>
+                    <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
+                            ng-click="addAccessCode()">Add Access Code +
+                        <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
+                    </button>
+                </div>
+
+            </th>
+
+
+            <tr ng-repeat="items in accessCodeData" ng-class='{red : !items.active, green: items.active}'>
+                <td align="center"><input type="text"  ng-model = "items.groupName" value="{{items.groupName}}"> </td>
+                <td align="center"><input type="text" ng-model = "items.accessCode" maxlength="10" value="{{items.accessCode}}"></td>
+                <td align="center"><input style="transform: scale(1)" type="checkbox" ng-model = "items.active" value="{{items.active}}"></td>
+
+                <td align="center">
+                    <div>
+                        <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
+                                ng-click="applyChanges($index)">Apply Changes
+                            <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+
+
+        </table>
+    </div>
+</center>
+</body>
+</html>

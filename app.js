@@ -121,6 +121,20 @@ saisaLiveAdminApp.config(function ($stateProvider, $urlRouterProvider) {
             resolve: {authenticate: adminAuthenticate}
         })
 
+        .state('accessCodes', {
+            url: '/access-codes',
+            templateUrl: 'access-codes.html',
+            controller: 'accessCodesController',
+            resolve: {authenticate: adminAuthenticate}
+
+        })
+        .state('addAccessCodes', {
+            url: '/add-accesscode',
+            templateUrl: 'add-accesscode.html',
+            controller: 'addAccessCodeController',
+            resolve: {authenticate: adminAuthenticate}
+        })
+
 });
 
 function authenticate($q, $http, $state, $timeout, $cookies) {
@@ -1667,6 +1681,13 @@ saisaLiveAdminApp.controller('adminHomeController', function ($scope, $http, $st
         $state.go('login')
 
     };
+
+    $scope.accessCodes = function(){
+
+        $state.go('accessCodes');
+
+
+    };
 });
 
 saisaLiveAdminApp.controller('accountsHomeController', function ($scope, $http, $state, $cookies, $stateParams) {
@@ -1885,6 +1906,131 @@ saisaLiveAdminApp.controller('loginController', function ($scope, $http, $cookie
 });
 
 
+saisaLiveAdminApp.controller('accessCodesController', function ($scope, $http, $state, $cookies) {
+
+    var username = $cookies.get("username");
+    var password = $cookies.get("password");
 
 
+
+
+    $http({
+        method: 'POST',
+        url: baseTomcatUrl+'access-codes/get',
+        data:{
+            "username":username,
+            "password": password
+        }
+    }).then(function successCallback(response) {
+        $scope.accessCodeData = response.data;
+        console.log($scope.liveStreamData);
+
+    }, function errorCallback(response) {
+        // The next bit of code is asynchronously tricky.
+        alert("We encountered an error while retrieving your data");
+        console.log(response)
+
+    });
+
+    $scope.applyChanges = function(accessCodeIndex){
+
+        $http({
+            method: 'POST',
+            url: baseTomcatUrl+'access-codes/edit?id='+$scope.accessCodeData[accessCodeIndex].id,
+            data: {
+                "groupName": $scope.accessCodeData[accessCodeIndex].groupName,
+                "accessCode": $scope.accessCodeData[accessCodeIndex].accessCode,
+                "active": $scope.accessCodeData[accessCodeIndex].active,
+                "username": username,
+                "password": password
+            }
+        }).then(function successCallback(response) {
+            alert('Databases Successfully Updated');
+
+        }, function errorCallback(response) {
+            // The next bit of code is asynchronously tricky.
+
+            alert("We encountered an error while applying the changes");
+            console.log(response)
+        });
+
+
+    };
+
+
+
+    $scope.addAccessCode = function(liveIndex){
+
+        $state.go('addAccessCodes');
+
+
+    };
+
+    $scope.adminHome = function () {
+
+        window.location.replace(baseUrl+"admin-saisa-live/#!/admin-home");
+
+    };
+
+
+    $scope.logout = function () {
+
+        $cookies.remove("username");
+        $cookies.remove("password");
+        $cookies.remove("access");
+        $cookies.remove("workingTournament");
+
+        $state.go('login')
+
+    };
+});
+
+saisaLiveAdminApp.controller('addAccessCodeController', function ($scope, $http, $state, $cookies) {
+
+    var username = $cookies.get("username");
+    var password = $cookies.get("password");
+
+
+    $scope.addAccessCode = function () {
+        $http({
+            method: 'POST',
+            url: baseTomcatUrl+'access-codes/new',
+            data: {
+                "groupName": $scope.groupName,
+                "active": $scope.activeStatus,
+                "accessCode": $scope.accessCode,
+                "username": username,
+                "password":password
+            }
+        }).then(function successCallback(response) {
+            alert('Databases Successfully Updated');
+            window.location.replace(baseUrl+"admin-saisa-live/#!/access-codes");
+
+
+        }, function errorCallback(response) {
+            // The next bit of code is asynchronously tricky.
+            alert("We encountered an error while saving your information.");
+            console.log(response)
+        });
+    };
+
+
+    $scope.logout = function () {
+
+        $cookies.remove("username");
+        $cookies.remove("password");
+        $cookies.remove("access");
+        $cookies.remove("workingTournament");
+
+        $state.go('login')
+
+    };
+
+    $scope.back = function () {
+
+        window.location.replace(baseUrl+"admin-saisa-live/#!/access-codes");
+
+    };
+
+});
 
