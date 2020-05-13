@@ -660,7 +660,14 @@ saisaLiveAdminApp.controller('gamesHomeController', function ($scope, $http, $st
         url: baseTomcatUrl+'games?activeStatus=1&tournamentId='+tournamentId
     }).then(function successCallback(response) {
         $scope.liveGames = response.data;
+        var ts = new Date;
+        for(var i=0; i<$scope.liveGames.length;i++){
 
+            let ts = new Date($scope.liveGames[i].startTime*1000);
+            console.log(ts);
+            console.log(ts.toDateString());
+            $scope.liveGames[i].startTime = ts.toLocaleString();
+        }
     }, function errorCallback(response) {
         // The next bit of code is asynchronously tricky.
         alert("We encountered an error while retrieving your data");
@@ -672,7 +679,14 @@ saisaLiveAdminApp.controller('gamesHomeController', function ($scope, $http, $st
         url: baseTomcatUrl+'games?activeStatus=0&tournamentId='+tournamentId
     }).then(function successCallback(response) {
         $scope.upcomingGames = response.data;
+        var ts = new Date;
+        for(var i=0; i<$scope.upcomingGames.length;i++){
 
+            let ts = new Date($scope.upcomingGames[i].startTime*1000);
+            console.log(ts);
+            console.log(ts.toDateString());
+            $scope.upcomingGames[i].startTime = ts.toLocaleString();
+        }
     }, function errorCallback(response) {
         // The next bit of code is asynchronously tricky.
         alert("We encountered an error while retrieving your data");
@@ -684,7 +698,14 @@ saisaLiveAdminApp.controller('gamesHomeController', function ($scope, $http, $st
         url: baseTomcatUrl+'games?activeStatus=2&tournamentId='+tournamentId
     }).then(function successCallback(response) {
         $scope.completedGames = response.data;
+        var ts = new Date;
+        for(var i=0; i<$scope.completedGames.length;i++){
 
+            let ts = new Date($scope.completedGames[i].startTime*1000);
+            console.log(ts);
+            console.log(ts.toDateString());
+            $scope.completedGames[i].startTime = ts.toLocaleString();
+        }
     }, function errorCallback(response) {
         // The next bit of code is asynchronously tricky.
         alert("We encountered an error while retrieving your data");
@@ -696,7 +717,14 @@ saisaLiveAdminApp.controller('gamesHomeController', function ($scope, $http, $st
         url: baseTomcatUrl+'games?activeStatus=3&tournamentId='+tournamentId
     }).then(function successCallback(response) {
         $scope.inactiveGames = response.data;
+        var ts = new Date;
+        for(var i=0; i<$scope.inactiveGames.length;i++){
 
+            let ts = new Date($scope.inactiveGames[i].startTime*1000);
+            console.log(ts);
+            console.log(ts.toDateString());
+            $scope.inactiveGames[i].startTime = ts.toLocaleString();
+        }
     }, function errorCallback(response) {
         // The next bit of code is asynchronously tricky.
         alert("We encountered an error while retrieving your data");
@@ -894,7 +922,8 @@ saisaLiveAdminApp.controller('editGamesController', function ($scope, $http, $st
 
             $scope.gameDescription = $scope.gameData[0].gameDescription;
             $scope.location = $scope.gameData[0].location;
-            $scope.startTime = $scope.gameData[0].startTime;
+            let ts = new Date($scope.gameData[0].startTime*1000);
+            $scope.startTime = ts;
 
 
             $scope.mLivestream = $scope.gameData[0].livestream.id.toString();
@@ -967,7 +996,7 @@ saisaLiveAdminApp.controller('editGamesController', function ($scope, $http, $st
                     "livestreamId": parseInt($scope.mLivestream),
                     "location": $scope.location,
                     "result": 0,
-                    "startTime": $scope.startTime,
+                    "startTime": ($scope.startTime/1000).toString(),
                     "team1": parseInt($scope.mT1),
                     "team1Score": "",
                     "team2": parseInt($scope.mT2),
@@ -997,7 +1026,7 @@ saisaLiveAdminApp.controller('editGamesController', function ($scope, $http, $st
                     "livestreamId": parseInt($scope.mLivestream),
                     "location": $scope.location,
                     "result": $scope.gameData[0].result,
-                    "startTime": $scope.startTime,
+                    "startTime": ($scope.startTime/1000).toString(),
                     "team1": parseInt($scope.mT1),
                     "team1Score": $scope.gameData[0].team1Score,
                     "team2": parseInt($scope.mT2),
@@ -1509,6 +1538,12 @@ saisaLiveAdminApp.controller('editTournamentController', function ($scope, $http
             url: baseTomcatUrl+'tournaments?tournamentId='+tournamentId
         }).then(function successCallback(response) {
             $scope.tournamentData = response.data;
+            let ts = new Date($scope.tournamentData.startDate*1000);
+            let ts2 = new Date($scope.tournamentData.endDate*1000);
+            $scope.tournamentData.startDate = ts;
+            $scope.tournamentData.endDate = ts2;
+            console.log($scope.tournamentData.startDate);
+
 
         }, function errorCallback(response) {
             // The next bit of code is asynchronously tricky.
@@ -1538,7 +1573,7 @@ saisaLiveAdminApp.controller('editTournamentController', function ($scope, $http
                 method: 'POST',
                 url: baseTomcatUrl+'tournaments/edit?tournamentId='+$stateParams.id,
                 data: {
-                    "endDate": $scope.tournamentData.endDate,
+                    "endDate": ($scope.tournamentData.endDate/1000).toString(),
                     "location": $scope.tournamentData.location,
                     "logo": $scope.tournamentData.logo,
                     "name": $scope.tournamentData.name,
@@ -1547,7 +1582,7 @@ saisaLiveAdminApp.controller('editTournamentController', function ($scope, $http
                     "scoresActive": $scope.tournamentData.scoresActive,
                     "sportId": parseInt($scope.tournamentData.sportId),
                     "standingsActive": $scope.tournamentData.standingsActive,
-                    "startDate": $scope.tournamentData.startDate,
+                    "startDate": ($scope.tournamentData.startDate/1000).toString(),
                     "url": $scope.tournamentData.url,
                     "username": username,
                     "password": password
@@ -1580,7 +1615,7 @@ saisaLiveAdminApp.controller('editTournamentController', function ($scope, $http
                 method: 'POST',
                 url: baseTomcatUrl+'tournaments/new',
                 data: {
-                    "endDate": $scope.tournamentData.endDate,
+                    "endDate": ($scope.tournamentData.endDate/1000).toString(),
                     "location": $scope.tournamentData.location,
                     "logo": $scope.tournamentData.logo,
                     "name": $scope.tournamentData.name,
@@ -1589,7 +1624,7 @@ saisaLiveAdminApp.controller('editTournamentController', function ($scope, $http
                     "scoresActive": $scope.tournamentData.scoresActive,
                     "sportId": parseInt($scope.tournamentData.sportId),
                     "standingsActive": $scope.tournamentData.standingsActive,
-                    "startDate": $scope.tournamentData.startDate,
+                    "startDate": ($scope.tournamentData.startDate/1000).toString(),
                     "url": $scope.tournamentData.url,
                     "username": username,
                     "password": password
@@ -1635,6 +1670,18 @@ saisaLiveAdminApp.controller('adminHomeController', function ($scope, $http, $st
         url: baseTomcatUrl+'tournaments?tournamentId=' + 0
     }).then(function successCallback(response) {
         $scope.activeTournaments = response.data;
+
+        var ts = new Date;
+
+        for(var i=0; i<$scope.activeTournaments.length;i++){
+
+            let ts = new Date($scope.activeTournaments[i].startDate*1000);
+            let ts1 = new Date($scope.activeTournaments[i].endDate*1000);
+
+            $scope.activeTournaments[i].startDate = ts.toDateString();
+            $scope.activeTournaments[i].endDate = ts1.toDateString();
+
+        }
     }, function errorCallback(response) {
         // The next bit of code is asynchronously tricky.
         alert("We encountered an error while retrieving your data");
@@ -1649,7 +1696,17 @@ saisaLiveAdminApp.controller('adminHomeController', function ($scope, $http, $st
     }).then(function successCallback(response) {
         $scope.inActiveTournaments = response.data;
 
+        var ts = new Date;
 
+        for(var i=0; i<$scope.inActiveTournaments.length;i++){
+
+            let ts = new Date($scope.inActiveTournaments[i].startDate*1000);
+            let ts1 = new Date($scope.inActiveTournaments[i].endDate*1000);
+
+            $scope.inActiveTournaments[i].startDate = ts.toDateString();
+            $scope.inActiveTournaments[i].endDate = ts1.toDateString();
+
+        }
     }, function errorCallback(response) {
         // The next bit of code is asynchronously tricky.
         alert("We encountered an error while retrieving your data");

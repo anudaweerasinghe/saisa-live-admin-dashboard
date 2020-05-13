@@ -53,6 +53,8 @@
 
         <table style="width: 100%">
             <th style="font-size: 20pt">Description</th>
+            <th style="font-size: 20pt">Start Time</th>
+
             <th style="font-size: 20pt">Team 1</th>
             <th style="font-size: 20pt"></th>
             <th style="font-size: 20pt">Team 2</th>
@@ -72,6 +74,7 @@
 
             <tr ng-repeat="items in liveGames" ng-class='{green: true}'>
                 <td align="center" style="font-size: 14pt;"><b>{{items.gameDescription}}</b></td>
+                <td align="center" style="font-size: 14pt;"><b>{{items.startTime}}</b></td>
                 <td align="center" style="font-size: 20pt;"><b>{{items.team1.team.name}}</b></td>
                 <td align="center" style="font-size: 20pt;">vs</td>
                 <td align="center" style="font-size: 20pt;"><b>{{items.team2.team.name}}</b></td>
@@ -140,6 +143,7 @@
 
         <table style="width: 100%">
             <th style="font-size: 20pt">Description</th>
+            <th style="font-size: 20pt">Start Time</th>
 
             <th style="font-size: 20pt">Team 1</th>
             <th style="font-size: 20pt"></th>
@@ -160,6 +164,8 @@
 
             <tr ng-repeat="items in upcomingGames" ng-class='{green: true}'>
                 <td align="center" style="font-size: 14pt;"><b>{{items.gameDescription}}</b></td>
+                <td align="center" style="font-size: 14pt;"><b>{{items.startTime}}</b></td>
+
                 <td align="center" style="font-size: 20pt;"><b>{{items.team1.team.name}}</b></td>
                 <td align="center" style="font-size: 20pt;">vs</td>
                 <td align="center" style="font-size: 20pt;"><b>{{items.team2.team.name}}</b></td>
@@ -228,6 +234,7 @@
 
         <table style="width: 100%">
             <th style="font-size: 20pt">Description</th>
+            <th style="font-size: 20pt">Start Time</th>
 
             <th style="font-size: 20pt">Team 1</th>
             <th style="font-size: 20pt"></th>
@@ -249,6 +256,8 @@
 
             <tr ng-repeat="items in completedGames" ng-class='{green: true}'>
                 <td align="center" style="font-size: 14pt;"><b>{{items.gameDescription}}</b></td>
+                <td align="center" style="font-size: 14pt;"><b>{{items.startTime}}</b></td>
+
                 <td align="center" style="font-size: 20pt;"><b>{{items.team1.team.name}}</b></td>
                 <td align="center" style="font-size: 20pt;">vs</td>
                 <td align="center" style="font-size: 20pt;"><b>{{items.team2.team.name}}</b></td>
@@ -324,6 +333,7 @@
 
         <table style="width: 100%">
             <th style="font-size: 20pt">Description</th>
+            <th style="font-size: 20pt">Start Time</th>
 
             <th style="font-size: 20pt">Team 1</th>
             <th style="font-size: 20pt"></th>
@@ -345,6 +355,8 @@
 
             <tr ng-repeat="items in inactiveGames" ng-class='{red: true}'>
                 <td align="center" style="font-size: 14pt;"><b>{{items.gameDescription}}</b></td>
+                <td align="center" style="font-size: 14pt;"><b>{{items.startTime}}</b></td>
+
                 <td align="center" style="font-size: 20pt;"><b>{{items.team1.team.name}}</b></td>
                 <td align="center" style="font-size: 20pt;">vs</td>
                 <td align="center" style="font-size: 20pt;"><b>{{items.team2.team.name}}</b></td>
