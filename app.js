@@ -1611,6 +1611,27 @@ saisaLiveAdminApp.controller('editTournamentController', function ($scope, $http
                 console.log(response)
             });
         }else{
+
+
+            if($scope.tournamentData.poolsActive===undefined){
+                $scope.poolsActive = false;
+            }else{
+                $scope.poolsActive = $scope.tournamentData.poolsActive;
+            }
+
+            if($scope.tournamentData.scoresActive===undefined){
+                $scope.scoresActive = false;
+            }else{
+                $scope.scoresActive = $scope.tournamentData.scoresActive;
+            }
+
+            if($scope.tournamentData.standingsActive===undefined){
+                $scope.standingsActive = false;
+            }else{
+                $scope.standingsActive = $scope.tournamentData.standingsActive;
+            }
+
+
             $http({
                 method: 'POST',
                 url: baseTomcatUrl+'tournaments/new',
@@ -1620,10 +1641,10 @@ saisaLiveAdminApp.controller('editTournamentController', function ($scope, $http
                     "logo": $scope.tournamentData.logo,
                     "name": $scope.tournamentData.name,
                     "poolQuantity": parseInt($scope.tournamentData.poolQuantity),
-                    "poolsActive": $scope.tournamentData.poolsActive,
-                    "scoresActive": $scope.tournamentData.scoresActive,
+                    "poolsActive": $scope.poolsActive,
+                    "scoresActive": $scope.scoresActive,
                     "sportId": parseInt($scope.tournamentData.sportId),
-                    "standingsActive": $scope.tournamentData.standingsActive,
+                    "standingsActive": $scope.standingsActive,
                     "startDate": ($scope.tournamentData.startDate/1000).toString(),
                     "url": $scope.tournamentData.url,
                     "username": username,

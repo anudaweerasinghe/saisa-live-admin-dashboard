@@ -60,7 +60,7 @@
            ng-model="tournamentData.endDate">
     <br><br>
     <div class="col-md-12">
-        <div class="col-md-3">
+        <div class="col-md-3" ng-if="editTournament">
             <h4 style=" display: inline-block; margin-right: 500px">Tournament is Active</h4>
             <input style="transform: scale(1)" type="checkbox" ng-model="tournamentData.active"
                    value="{{tournamentData.active}}">
