@@ -23,10 +23,16 @@
     <h1>Admin Dashboard Home</h1>
     <h2 style="color: #17376e">{{tournamentData.name}}</h2>
     <br><br>
-    <div>
-        <div class="col-md-4">
+    <div class="col-md-12 centered">
+        <div class="col-md-4" ng-if="tournamentData.scoresActive">
             <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
                     ng-click="games()">Manage Games/Scoring
+                <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
+            </button>
+        </div>
+        <div class="col-md-4" ng-if="tournamentData.meetsActive">
+            <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
+                    ng-click="meets()">Manage Meet Events/Results
                 <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
             </button>
         </div>

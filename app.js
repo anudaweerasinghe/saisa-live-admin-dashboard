@@ -135,6 +135,29 @@ saisaLiveAdminApp.config(function ($stateProvider, $urlRouterProvider) {
             resolve: {authenticate: adminAuthenticate}
         })
 
+        .state('meetsHome', {
+            url: '/meets',
+            templateUrl: 'meets.html',
+            controller: 'meetsHomeController',
+            resolve: {authenticate: authenticate}
+        })
+
+        .state('editMeets', {
+            url: '/edit-meets?id',
+            params:{id:null},
+            templateUrl: 'edit-meets.html',
+            controller: 'editMeetsController',
+            resolve: {authenticate: authenticate}
+        })
+
+        .state('meetResults', {
+            url: '/results?id',
+            params:{id:null},
+            templateUrl: 'meets-results.html',
+            controller: 'meetResultsController',
+            resolve: {authenticate: authenticate}
+        })
+
 });
 
 function authenticate($q, $http, $state, $timeout, $cookies) {
@@ -273,7 +296,7 @@ saisaLiveAdminApp.controller('tournamentHomeController', function ($scope, $http
 
         window.location.href = baseUrl+'admin-saisa-live/#!/edit-participant?pool='+$scope.tournamentData.pools[pool1].pool;
 
-    }
+    };
 
     $scope.logout = function () {
 
@@ -306,6 +329,12 @@ saisaLiveAdminApp.controller('tournamentHomeController', function ($scope, $http
     $scope.games = function () {
 
         $state.go('gamesHome');
+
+    };
+
+    $scope.meets = function () {
+
+        $state.go('meetsHome');
 
     };
 
@@ -1542,6 +1571,7 @@ saisaLiveAdminApp.controller('editTournamentController', function ($scope, $http
             let ts2 = new Date($scope.tournamentData.endDate*1000);
             $scope.tournamentData.startDate = ts;
             $scope.tournamentData.endDate = ts2;
+            $scope.tournamentData.sportId = $scope.tournamentData.sportId.toString();
             console.log($scope.tournamentData.startDate);
 
 
@@ -1582,6 +1612,7 @@ saisaLiveAdminApp.controller('editTournamentController', function ($scope, $http
                     "scoresActive": $scope.tournamentData.scoresActive,
                     "sportId": parseInt($scope.tournamentData.sportId),
                     "standingsActive": $scope.tournamentData.standingsActive,
+                    "meetsActive": $scope.tournamentData.meetsActive,
                     "startDate": ($scope.tournamentData.startDate/1000).toString(),
                     "url": $scope.tournamentData.url,
                     "username": username,
@@ -1625,6 +1656,12 @@ saisaLiveAdminApp.controller('editTournamentController', function ($scope, $http
                 $scope.scoresActive = $scope.tournamentData.scoresActive;
             }
 
+            if($scope.tournamentData.meetsActive===undefined){
+                $scope.meetsActive = false;
+            }else{
+                $scope.meetsActive = $scope.tournamentData.meetsActive;
+            }
+
             if($scope.tournamentData.standingsActive===undefined){
                 $scope.standingsActive = false;
             }else{
@@ -1643,6 +1680,7 @@ saisaLiveAdminApp.controller('editTournamentController', function ($scope, $http
                     "poolQuantity": parseInt($scope.tournamentData.poolQuantity),
                     "poolsActive": $scope.poolsActive,
                     "scoresActive": $scope.scoresActive,
+                    "meetsActive": $scope.meetsActive,
                     "sportId": parseInt($scope.tournamentData.sportId),
                     "standingsActive": $scope.standingsActive,
                     "startDate": ($scope.tournamentData.startDate/1000).toString(),
@@ -1983,7 +2021,6 @@ saisaLiveAdminApp.controller('loginController', function ($scope, $http, $cookie
 
 });
 
-
 saisaLiveAdminApp.controller('accessCodesController', function ($scope, $http, $state, $cookies) {
 
     var username = $cookies.get("username");
@@ -2107,6 +2144,571 @@ saisaLiveAdminApp.controller('addAccessCodeController', function ($scope, $http,
     $scope.back = function () {
 
         window.location.replace(baseUrl+"admin-saisa-live/#!/access-codes");
+
+    };
+
+});
+
+saisaLiveAdminApp.controller('meetsHomeController', function ($scope, $http, $state, $cookies) {
+
+
+    var tournamentId = $cookies.get("workingTournament");
+    var username = $cookies.get("username");
+    var password = $cookies.get("password");
+
+    $http({
+        method: 'GET',
+        url: baseTomcatUrl+'tournaments?tournamentId=' + tournamentId
+    }).then(function successCallback(response) {
+        $scope.tournamentData = response.data;
+        console.log($scope.tournamentData);
+
+
+    }, function errorCallback(response) {
+        // The next bit of code is asynchronously tricky.
+        alert("We encountered an error while retrieving your data");
+        console.log(response)
+
+    });
+
+    $http({
+        method: 'GET',
+        url: baseTomcatUrl+'meets?activeStatus=1&tournamentId='+tournamentId
+    }).then(function successCallback(response) {
+        $scope.liveMeets = response.data;
+        var ts = new Date;
+        for(var i=0; i<$scope.liveMeets.length;i++){
+
+            let ts = new Date($scope.liveMeets[i].startTime*1000);
+            console.log(ts);
+            console.log(ts.toDateString());
+            $scope.liveMeets[i].startTime = ts.toLocaleString();
+            $scope.liveMeets[i].activeStatus = $scope.liveMeets[i].activeStatus.toString();
+        }
+    }, function errorCallback(response) {
+        // The next bit of code is asynchronously tricky.
+        alert("We encountered an error while retrieving your data");
+        console.log(response)
+    });
+
+    $http({
+        method: 'GET',
+        url: baseTomcatUrl+'meets?activeStatus=0&tournamentId='+tournamentId
+    }).then(function successCallback(response) {
+        $scope.upcomingMeets = response.data;
+        var ts = new Date;
+        for(var i=0; i<$scope.upcomingMeets.length;i++){
+
+            let ts = new Date($scope.upcomingMeets[i].startTime*1000);
+            console.log(ts);
+            console.log(ts.toDateString());
+            $scope.upcomingMeets[i].startTime = ts.toLocaleString();
+            $scope.upcomingMeets[i].activeStatus = $scope.upcomingMeets[i].activeStatus.toString();
+
+        }
+    }, function errorCallback(response) {
+        // The next bit of code is asynchronously tricky.
+        alert("We encountered an error while retrieving your data");
+        console.log(response)
+    });
+
+    $http({
+        method: 'GET',
+        url: baseTomcatUrl+'meets?activeStatus=2&tournamentId='+tournamentId
+    }).then(function successCallback(response) {
+        $scope.completedMeets = response.data;
+        var ts = new Date;
+        for(var i=0; i<$scope.completedMeets.length;i++){
+
+            let ts = new Date($scope.completedMeets[i].startTime*1000);
+            console.log(ts);
+            console.log(ts.toDateString());
+            $scope.completedMeets[i].startTime = ts.toLocaleString();
+            $scope.completedMeets[i].activeStatus = $scope.completedMeets[i].activeStatus.toString();
+
+        }
+    }, function errorCallback(response) {
+        // The next bit of code is asynchronously tricky.
+        alert("We encountered an error while retrieving your data");
+        console.log(response)
+    });
+
+    $http({
+        method: 'GET',
+        url: baseTomcatUrl+'meets?activeStatus=3&tournamentId='+tournamentId
+    }).then(function successCallback(response) {
+        $scope.inactiveMeets = response.data;
+        var ts = new Date;
+        for(var i=0; i<$scope.inactiveMeets.length;i++){
+
+            let ts = new Date($scope.inactiveMeets[i].startTime*1000);
+            console.log(ts);
+            console.log(ts.toDateString());
+            $scope.inactiveMeets[i].startTime = ts.toLocaleString();
+            $scope.inactiveMeets[i].activeStatus = $scope.inactiveMeets[i].activeStatus.toString();
+
+        }
+    }, function errorCallback(response) {
+        // The next bit of code is asynchronously tricky.
+        alert("We encountered an error while retrieving your data");
+        console.log(response)
+    });
+
+
+    $scope.applyLiveChanges = function(liveIndex){
+
+        $http({
+            method: 'POST',
+            url: baseTomcatUrl+'meets/status?meetId='+$scope.liveMeets[liveIndex].id+'&newStatus='+$scope.liveMeets[liveIndex].activeStatus,
+            data:{
+                "username": username,
+                "password":password
+            }
+        }).then(function successCallback(response) {
+            alert('Databases Successfully Updated');
+            window.location.reload();
+
+
+        }, function errorCallback(response) {
+            // The next bit of code is asynchronously tricky.
+            alert("We encountered an error while saving your information.");
+            console.log(response)
+        });
+
+    };
+
+    $scope.applyUpcomingChanges = function(upcomingIndex){
+
+        $http({
+            method: 'POST',
+            url: baseTomcatUrl+'meets/status?meetId='+$scope.upcomingMeets[upcomingIndex].id+'&newStatus='+$scope.upcomingMeets[upcomingIndex].activeStatus,
+            data:{
+                "username": username,
+                "password":password
+            }
+        }).then(function successCallback(response) {
+            alert('Databases Successfully Updated');
+            window.location.reload();
+
+
+        }, function errorCallback(response) {
+            // The next bit of code is asynchronously tricky.
+            alert("We encountered an error while saving your information.");
+            console.log(response)
+        });
+
+    };
+
+    $scope.applyCompletedChanges = function(completedIndex){
+
+        $http({
+            method: 'POST',
+            url: baseTomcatUrl+'meets/status?meetId='+$scope.completedMeets[completedIndex].id+'&newStatus='+$scope.completedMeets[completedIndex].activeStatus,
+            data:{
+                "username": username,
+                "password":password
+            }
+        }).then(function successCallback(response) {
+            alert('Databases Successfully Updated');
+            window.location.reload();
+
+
+        }, function errorCallback(response) {
+            // The next bit of code is asynchronously tricky.
+            alert("We encountered an error while saving your information.");
+            console.log(response)
+        });
+
+    };
+
+    $scope.applyInactiveChanges = function(inactiveIndex){
+
+        $http({
+            method: 'POST',
+            url: baseTomcatUrl+'meets/status?meetId='+$scope.inactiveMeets[inactiveIndex].id+'&newStatus='+$scope.inactiveMeets[inactiveIndex].activeStatus,
+            data:{
+                "username": username,
+                "password":password
+            }
+        }).then(function successCallback(response) {
+            alert('Databases Successfully Updated');
+            window.location.reload();
+
+
+        }, function errorCallback(response) {
+            // The next bit of code is asynchronously tricky.
+            alert("We encountered an error while saving your information.");
+            console.log(response)
+        });
+
+    };
+
+
+
+    $scope.viewLive = function(type, index){
+        if(type ===1){
+            window.open($scope.liveMeets[index].livestream.url);
+        }else if(type === 0){
+            window.open($scope.upcomingMeets[index].livestream.url);
+        }else if(type === 2){
+            window.open($scope.completedMeets[index].livestream.url);
+        }else{
+            window.open($scope.inactiveMeets[index].livestream.url);
+
+        }
+    };
+
+    $scope.viewResults = function(index){
+        window.open($scope.completedMeets[index].resultUrl);
+
+    };
+
+    $scope.home = function () {
+
+        window.location.replace(baseUrl+"admin-saisa-live/#!/tournament-home?id="+tournamentId);
+
+    };
+
+    $scope.editEvent = function (meetId) {
+
+        window.location.replace(baseUrl+"admin-saisa-live/#!/edit-meets?id="+meetId);
+
+    };
+
+    $scope.addMeets = function(){
+        $state.go('editMeets');
+    };
+
+    $scope.addResults = function(eventId){
+        window.location.replace(baseUrl+"admin-saisa-live/#!/results?id="+eventId);
+    }
+
+    $scope.logout = function () {
+
+        $cookies.remove("username");
+        $cookies.remove("password");
+        $cookies.remove("access");
+        $cookies.remove("workingTournament");
+
+        $state.go('login')
+
+    };
+});
+
+saisaLiveAdminApp.controller('editMeetsController', function ($scope, $http, $state, $cookies, $stateParams) {
+
+    var tournamentId = $cookies.get("workingTournament");
+    var username = $cookies.get("username");
+    var password = $cookies.get("password");
+
+    $scope.newGames = true;
+    $scope.editGames = false;
+    $scope.completeAvailable = false;
+
+    if($stateParams.id!=null) {
+        $scope.editGames = true;
+        $scope.newGames = false;
+
+        $http({
+            method: 'GET',
+            url: baseTomcatUrl+'meets?meetId=' + $stateParams.id
+        }).then(function successCallback(response) {
+
+            $scope.eventData = response.data;
+
+
+            $scope.description = $scope.eventData[0].description;
+            let ts = new Date($scope.eventData[0].startTime*1000);
+            $scope.startTime = ts;
+
+
+            $scope.mLivestream = $scope.eventData[0].livestream.id.toString();
+            $scope.mActiveStatus = $scope.eventData[0].activeStatus.toString();
+
+            if($scope.eventData[0].activeStatus===2){
+                $scope.completeAvailable = true;
+            };
+
+
+        }, function errorCallback(response) {
+            // The next bit of code is asynchronously tricky.
+            alert("We encountered an error while retrieving your data");
+            console.log(response)
+
+        });
+
+    }
+
+    $http({
+        method: 'GET',
+        url: baseTomcatUrl+'tournaments?tournamentId=' + tournamentId
+    }).then(function successCallback(response) {
+        $scope.tournamentData = response.data;
+        console.log($scope.tournamentData);
+
+
+    }, function errorCallback(response) {
+        // The next bit of code is asynchronously tricky.
+        alert("We encountered an error while retrieving your data");
+        console.log(response)
+
+    });
+
+
+    $http({
+        method: 'GET',
+        url: baseTomcatUrl+'livestreams?tournamentId=' + tournamentId
+    }).then(function successCallback(response) {
+
+        $scope.livestreams = response.data;
+
+    }, function errorCallback(response) {
+        // The next bit of code is asynchronously tricky.
+        alert("We encountered an error while retrieving your data");
+        console.log(response)
+
+    });
+
+    $scope.saveEvent = function(){
+
+        if($scope.newGames === true){
+
+            $http({
+                method: 'POST',
+                url: baseTomcatUrl+'meets/new',
+                data: {
+                    "activeStatus": parseInt($scope.mActiveStatus),
+                    "description": $scope.description,
+                    "livestreamId": parseInt($scope.mLivestream),
+                    "startTime": ($scope.startTime/1000).toString(),
+                    "tournamentId": tournamentId,
+                    "username": username,
+                    "password": password
+                }
+            }).then(function successCallback(response) {
+                alert('Databases Successfully Updated');
+                window.location.replace(baseUrl+"admin-saisa-live/#!/meets");
+
+
+            }, function errorCallback(response) {
+                // The next bit of code is asynchronously tricky.
+                alert("We encountered an error while saving your information.");
+                console.log(response)
+            });
+
+        }else{
+            $http({
+                method: 'POST',
+                url: baseTomcatUrl+'meets/edit?meetId='+$stateParams.id,
+                data: {
+                    "activeStatus": parseInt($scope.mActiveStatus),
+                    "description": $scope.description,
+                    "livestreamId": parseInt($scope.mLivestream),
+                    "startTime": ($scope.startTime/1000).toString(),
+                    "tournamentId": tournamentId,
+                    "username": username,
+                    "password": password
+                }
+            }).then(function successCallback(response) {
+                alert('Databases Successfully Updated');
+                window.location.replace(baseUrl+"admin-saisa-live/#!/meets");
+
+
+            }, function errorCallback(response) {
+                // The next bit of code is asynchronously tricky.
+                alert("We encountered an error while saving your information.");
+                console.log(response)
+            });
+        }
+
+    };
+
+
+    $scope.back = function () {
+
+        window.location.replace(baseUrl+"admin-saisa-live/#!/meets");
+
+    };
+
+    $scope.logout = function () {
+
+        $cookies.remove("username");
+        $cookies.remove("password");
+        $cookies.remove("access");
+        $cookies.remove("workingTournament");
+
+        $state.go('login')
+
+    };
+});
+
+saisaLiveAdminApp.controller('meetResultsController', function ($scope, $http, $state, $cookies, $stateParams) {
+
+    var tournamentId =     $cookies.get("workingTournament");
+    var username = $cookies.get("username");
+    var password = $cookies.get("password");
+
+
+
+    if($stateParams.id!=null) {
+        $http({
+            method: 'GET',
+            url: baseTomcatUrl+'meets?meetId=' + $stateParams.id
+        }).then(function successCallback(response) {
+
+            $scope.eventData = response.data;
+
+            $scope.description = $scope.eventData[0].description;
+            $scope.p1record = $scope.eventData[0].p1record;
+            $scope.p2record = $scope.eventData[0].p2record;
+            $scope.p3record = $scope.eventData[0].p3record;
+
+
+
+
+            if($scope.eventData[0].activeStatus===0){
+                $http({
+                    method: 'POST',
+                    url: baseTomcatUrl+'meets/status?meetId='+$stateParams.id+'&newStatus='+1,
+                    data:{
+                        "username": username,
+                        "password": password
+                    }
+                }).then(function successCallback(response) {
+                    $scope.eventData[0].activeStatus=1;
+                    window.location.reload();
+
+
+                }, function errorCallback(response) {
+                    // The next bit of code is asynchronously tricky.
+                    alert("We encountered an error while saving your information.");
+                    console.log(response)
+                });
+            }
+
+
+            $scope.activeStatus = $scope.eventData[0].activeStatus;
+
+            if($scope.activeStatus===2){
+                $scope.p1Name = $scope.eventData[0].p1name;
+                $scope.p2Name = $scope.eventData[0].p2name;
+                $scope.p3Name = $scope.eventData[0].p3name;
+                $scope.resultUrl = $scope.eventData[0].resultUrl;
+
+                $scope.p1Team = $scope.eventData[0].p1Team.id.toString();
+                $scope.p2Team = $scope.eventData[0].p2Team.id.toString();
+                $scope.p3Team = $scope.eventData[0].p3Team.id.toString();
+
+                $scope.p1Result = $scope.eventData[0].p1result;
+                $scope.p2Result = $scope.eventData[0].p2result;
+                $scope.p3Result = $scope.eventData[0].p3result;
+            }
+
+        }, function errorCallback(response) {
+            // The next bit of code is asynchronously tricky.
+            alert("We encountered an error while retrieving your data");
+            console.log(response)
+
+        });
+
+    }else{
+        window.location.replace(baseUrl+"admin-saisa-live/#!/meets");
+
+    }
+
+    $http({
+        method: 'GET',
+        url: baseTomcatUrl+'tournaments?tournamentId=' + tournamentId
+    }).then(function successCallback(response) {
+        $scope.tournamentData = response.data;
+        console.log($scope.tournamentData);
+
+
+    }, function errorCallback(response) {
+        // The next bit of code is asynchronously tricky.
+        alert("We encountered an error while retrieving your data");
+        console.log(response)
+
+    });
+
+    $http({
+        method: 'GET',
+        url: baseTomcatUrl+'tournaments/participants/minified?tournamentId=' + tournamentId
+    }).then(function successCallback(response) {
+
+        $scope.teams = response.data;
+
+    }, function errorCallback(response) {
+        // The next bit of code is asynchronously tricky.
+        alert("We encountered an error while retrieving your data");
+        console.log(response)
+
+    });
+
+    $scope.saveResults = function(){
+
+        $http({
+            method: 'POST',
+            url: baseTomcatUrl+'meets/results',
+            data:{
+                "meetId": $stateParams.id,
+                "p1name": $scope.p1Name,
+                "p1record": $scope.p1record,
+                "p1result": $scope.p1Result,
+                "p1teamId": parseInt($scope.p1Team),
+                "p2name": $scope.p2Name,
+                "p2record": $scope.p2record,
+                "p2result": $scope.p2Result,
+                "p2teamId": parseInt($scope.p2Team),
+                "p3name": $scope.p3Name,
+                "p3record": $scope.p3record,
+                "p3result": $scope.p3Result,
+                "p3teamId": parseInt($scope.p3Team),
+                "password": password,
+                "resultUrl": $scope.resultUrl,
+                "username": username
+            }
+        }).then(function successCallback(response) {
+            $http({
+                method: 'POST',
+                url: baseTomcatUrl+'meets/status?meetId='+$stateParams.id+'&newStatus='+2,
+                data:{
+                    "username": username,
+                    "password": password
+                }
+            }).then(function successCallback(response) {
+                alert('Databases Successfully Updated. You can update standings in the next page');
+                window.location.replace(baseUrl+"admin-saisa-live/#!/tournament-home?id="+tournamentId);
+
+            }, function errorCallback(response) {
+                // The next bit of code is asynchronously tricky.
+                alert("We encountered an error while saving your information.");
+                console.log(response)
+            });
+
+        }, function errorCallback(response) {
+            // The next bit of code is asynchronously tricky.
+            alert("We encountered an error while saving your information.");
+            console.log(response)
+        });
+    };
+
+
+
+    $scope.back = function () {
+
+        window.location.replace(baseUrl+"admin-saisa-live/#!/meets");
+
+    };
+
+    $scope.logout = function () {
+
+        $cookies.remove("username");
+        $cookies.remove("password");
+        $cookies.remove("access");
+        $cookies.remove("workingTournament");
+
+        $state.go('login')
 
     };
 

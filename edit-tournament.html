@@ -60,26 +60,32 @@
            ng-model="tournamentData.endDate">
     <br><br>
     <div class="col-md-12">
-        <div class="col-md-3" ng-if="editTournament">
+        <div class="col-md-2" ng-if="editTournament">
             <h4 style=" display: inline-block; margin-right: 500px">Tournament is Active</h4>
             <input style="transform: scale(1)" type="checkbox" ng-model="tournamentData.active"
                    value="{{tournamentData.active}}">
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <h4 style=" display: inline-block; margin-right: 500px">Scores Feature</h4>
             <input style="transform: scale(1)" type="checkbox" ng-model="tournamentData.scoresActive"
                    value="{{tournamentData.scoresActive}}">
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
+            <h4 style=" display: inline-block; margin-right: 500px">Meets Features</h4>
+            <input style="transform: scale(1)" type="checkbox" ng-model="tournamentData.meetsActive"
+                   value="{{tournamentData.meetsActive}}">
+        </div>
+        <div class="col-md-2">
             <h4 style=" display: inline-block; margin-right: 500px">Standings Feature</h4>
             <input style="transform: scale(1)" type="checkbox" ng-model="tournamentData.standingsActive"
                    value="{{tournamentData.standingsActive}}">
         </div>
-        <div class="col-md-3">
-            <h4 style=" display: inline-block; margin-right: 500px">Pools Active</h4>
+        <div class="col-md-2">
+            <h4 style=" display: inline-block; margin-right: 500px">Multiple Pools</h4>
             <input style="transform: scale(1)" type="checkbox" ng-model="tournamentData.poolsActive"
                    value="{{tournamentData.poolsActive}}">
         </div>
+
     </div>
     <br><br><br><br><br><br>
     <div ng-if="tournamentData.poolsActive">

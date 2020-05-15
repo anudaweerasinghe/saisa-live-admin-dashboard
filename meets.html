@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+<script src="assets/js/index.js"></script>
+
+<script src="app.js"></script>
+<link rel="stylesheet" href="assets/css/style.css">
+
+<link rel="shortcut icon" href="assets/favicon.jpg">
+<head>
+    <meta charset="UTF-8">
+    <title>{{tournamentData.name}} - Games and Scoring</title>
+</head>
+<body>
+<center>
+
+    <div align="left">
+        <button style="font-size: large; display: inline-block; margin-right: 85%" ng-click="logout()">Logout</button>
+        <button style="font-size: large; display: inline-block;" ng-click="home()">Home</button>
+
+    </div>
+    <h1>Meet Events and Results</h1>
+    <h2 style="color: #17376e">{{tournamentData.name}}</h2>
+    <br>
+    <div class="col-md-12">
+        <div class="col-md-4">
+
+        </div>
+        <div class="col-md-4">
+            <div>
+                <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
+                        ng-click="addMeets()">Add Event +
+                    <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
+                </button>
+            </div>
+        </div>
+        <div class="col-md-3">
+
+        </div>
+
+    </div>
+
+
+
+
+    <div>
+
+
+        <h2>Live Events</h2>
+
+        <br><br><br>
+
+        <table style="width: 100%">
+            <th style="font-size: 20pt">Description</th>
+            <th style="font-size: 20pt">Start Time</th>
+
+
+            <th style="font-size: 20pt">Live Status</th>
+
+            <th style="font-size: 20pt"></th>
+            <th style="font-size: 20pt"></th>
+            <th style="font-size: 20pt"></th>
+
+            <th align="center">
+            </th>
+
+
+            <tr ng-repeat="items in liveMeets" ng-class='{green: true}'>
+                <td align="center" style="font-size: 14pt;"><b>{{items.description}}</b></td>
+                <td align="center" style="font-size: 14pt;"><b>{{items.startTime}}</b></td>
+                <td>
+                    <select ng-model="items.activeStatus" style="background: white; font-size: 16pt; width: 80%;">
+                        <option value="1">Live now</option>
+                        <option value="0">Upcoming</option>
+                        <option value="3">Inactive</option>
+                    </select>
+                </td>
+                <td align="center">
+                    <div>
+                        <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
+                                ng-click="applyLiveChanges($index)">Apply Changes
+                            <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
+                        </button>
+                    </div>
+                </td>
+
+                <td align="center">
+                    <div>
+                        <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
+                                ng-click="addResults(items.id)">Add Results
+                            <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
+                        </button>
+                    </div>
+                </td>
+
+                <td align="center">
+                    <div>
+                        <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
+                                ng-click="viewLive(1, $index)">View Livestream
+                            <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
+                        </button>
+                    </div>
+                </td>
+                <td align="center">
+                    <div>
+                        <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
+                                ng-click="editEvent(items.id)">Edit Event Details
+                            <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+
+
+        </table>
+    </div>
+
+    <br>
+    <br>
+    <br>
+
+    <div>
+
+
+        <h2>Fixtures/Upcoming Events</h2>
+
+        <br><br><br>
+
+        <table style="width: 100%">
+            <th style="font-size: 20pt">Description</th>
+            <th style="font-size: 20pt">Start Time</th>
+
+
+            <th style="font-size: 20pt">Live Status</th>
+
+            <th style="font-size: 20pt"></th>
+            <th style="font-size: 20pt"></th>
+            <th style="font-size: 20pt"></th>
+
+            <th align="center">
+            </th>
+
+
+            <tr ng-repeat="items in upcomingMeets" ng-class='{green: true}'>
+                <td align="center" style="font-size: 14pt;"><b>{{items.description}}</b></td>
+                <td align="center" style="font-size: 14pt;"><b>{{items.startTime}}</b></td>
+                <td>
+                    <select ng-model="items.activeStatus" style="background: white; font-size: 16pt; width: 80%;">
+                        <option value="1">Live now</option>
+                        <option value="0">Upcoming</option>
+                        <option value="3">Inactive</option>
+                    </select>
+                </td>
+                <td align="center">
+                    <div>
+                        <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
+                                ng-click="applyUpcomingChanges($index)">Apply Changes
+                            <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
+                        </button>
+                    </div>
+                </td>
+
+                <td align="center">
+                    <div>
+                        <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
+                                ng-click="addResults(items.id)">Add Results
+                            <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
+                        </button>
+                    </div>
+                </td>
+
+                <td align="center">
+                    <div>
+                        <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
+                                ng-click="viewLive(0, $index)">View Livestream
+                            <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
+                        </button>
+                    </div>
+                </td>
+                <td align="center">
+                    <div>
+                        <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
+                                ng-click="editEvent(items.id)">Edit Event Details
+                            <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+
+
+        </table>
+    </div>
+
+    <br>
+    <br>
+    <br>
+
+    <div>
+
+
+        <h2>Results/Completed Events</h2>
+
+        <br><br><br>
+
+        <table style="width: 100%">
+            <th style="font-size: 20pt">Description</th>
+            <th style="font-size: 20pt">Start Time</th>
+            <th style="font-size: 20pt">P1 - Team</th>
+            <th style="font-size: 20pt">P2 - Team</th>
+            <th style="font-size: 20pt">P3 - Team</th>
+
+
+            <th style="font-size: 20pt">Live Status</th>
+
+            <th style="font-size: 20pt"></th>
+            <th style="font-size: 20pt"></th>
+            <th style="font-size: 20pt"></th>
+            <th style="font-size: 20pt"></th>
+
+            <th align="center">
+            </th>
+
+
+            <tr ng-repeat="items in completedMeets" ng-class='{green: true}'>
+                <td align="center" style="font-size: 14pt;"><b>{{items.description}}</b></td>
+                <td align="center" style="font-size: 14pt;"><b>{{items.startTime}}</b></td>
+                <td align="center" style="font-size: 20pt;"><b>{{items.p1Team.team.name}}</b></td>
+                <td align="center" style="font-size: 20pt;"><b>{{items.p2Team.team.name}}</b></td>
+                <td align="center" style="font-size: 20pt;"><b>{{items.p3Team.team.name}}</b></td>
+
+                <td>
+                    <select ng-model="items.activeStatus" style="background: white; font-size: 16pt; width: 80%;">
+                        <option value="2">Completed</option>
+                        <option value="1">Live now</option>
+                        <option value="0">Upcoming</option>
+                        <option value="3">Inactive</option>
+                    </select>
+                </td>
+                <td align="center">
+                    <div>
+                        <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
+                                ng-click="applyCompletedChanges($index)">Apply Changes
+                            <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
+                        </button>
+                    </div>
+                </td>
+                <td align="center">
+                    <div>
+                        <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
+                                ng-click="viewResults($index)">View Full Results
+                            <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
+                        </button>
+                    </div>
+                </td>
+                <td align="center">
+                    <div>
+                        <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
+                                ng-click="addResults(items.id)">Edit Results
+                            <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
+                        </button>
+                    </div>
+                </td>
+
+                <td align="center">
+                    <div>
+                        <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
+                                ng-click="viewLive(2, $index)">View Livestream
+                            <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
+                        </button>
+                    </div>
+                </td>
+                <td align="center">
+                    <div>
+                        <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
+                                ng-click="editEvent(items.id)">Edit Event Details
+                            <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+
+
+        </table>
+    </div>
+
+    <br>
+    <br>
+    <br>
+
+    <div>
+
+
+        <h2>Inactive Events</h2>
+
+        <br><br><br>
+
+        <table style="width: 100%">
+            <th style="font-size: 20pt">Description</th>
+            <th style="font-size: 20pt">Start Time</th>
+
+
+            <th style="font-size: 20pt">Live Status</th>
+
+            <th style="font-size: 20pt"></th>
+            <th style="font-size: 20pt"></th>
+            <th style="font-size: 20pt"></th>
+
+            <th align="center">
+            </th>
+
+
+            <tr ng-repeat="items in inactiveMeets" ng-class='{red: true}'>
+                <td align="center" style="font-size: 14pt;"><b>{{items.description}}</b></td>
+                <td align="center" style="font-size: 14pt;"><b>{{items.startTime}}</b></td>
+                <td>
+                    <select ng-model="items.activeStatus" style="background: white; font-size: 16pt; width: 80%;">
+                        <option value="1">Live now</option>
+                        <option value="0">Upcoming</option>
+                        <option value="3">Inactive</option>
+                    </select>
+                </td>
+                <td align="center">
+                    <div>
+                        <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
+                                ng-click="applyInactiveChanges($index)">Apply Changes
+                            <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
+                        </button>
+                    </div>
+                </td>
+
+                <td align="center">
+                    <div>
+                        <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
+                                ng-click="addResults(items.id)">Add Results
+                            <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
+                        </button>
+                    </div>
+                </td>
+
+                <td align="center">
+                    <div>
+                        <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
+                                ng-click="viewLive(3, $index)">View Livestream
+                            <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
+                        </button>
+                    </div>
+                </td>
+                <td align="center">
+                    <div>
+                        <button ng-disabled="gameForm.$invalid" type="submit" class="button buttonBlue" style="font-family: Futura"
+                                ng-click="editEvent(items.id)">Edit Event Details
+                            <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+
+
+        </table>
+    </div>
+
+    <br>
+    <br>
+    <br>
+
+
+</center>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+<script src="assets/js/index.js"></script>
+
+<script src="app.js"></script>
+<link rel="stylesheet" href="assets/css/style.css">
+
+<link rel="shortcut icon" href="assets/favicon.jpg">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{description}} - {{tournamentData.name}}</title>
+
+</head>
+<body>
+<center>
+
+    <div align="left">
+        <button style="font-size: large; display: inline-block; margin-right: 90%" ng-click="logout()">Logout</button>
+        <button style="font-size: large; display: inline-block;" ng-click="back()">Back</button>
+    </div>
+    <h1>Add Results - {{description}}</h1>
+
+    <h2 style="color: #17376e">{{tournamentData.name}}</h2>
+    <h2 ng-if="activeStatus===1" style="color: orangered">Live Now</h2>
+    <h2 ng-if="activeStatus===0" style="color: darkslategray">Upcoming Fixture</h2>
+    <h2 ng-if="activeStatus===2" style="color: darkslategray">Completed Result</h2>
+    <h2 ng-if="activeStatus===3" style="color: darkslategray">Inactive Score/Game</h2>
+
+
+</center>
+
+<form style="width: 100%" name="pics">
+
+    <h4 style=" display: inline-block; margin-right: 500px">URL To Full Results PDF</h4>
+    <input type="text" style=" display: inline-block; margin-right: 500px" name="team-photo" ng-model="resultUrl">
+
+    <br><br>
+
+    <table style="width: 100%">
+        <th style="font-size: 20pt">Place</th>
+        <th style="font-size: 20pt">Team</th>
+
+        <th style="font-size: 20pt">Athlete Name</th>
+
+        <th style="font-size: 20pt">Result</th>
+        <th style="font-size: 20pt">New Record?</th>
+
+        </th>
+
+        <tr>
+            <td align="center" style="font-size: 20pt;"><b>1</b></td>
+            <td align="center" style="font-size: 14pt;"><b>
+                <select ng-model="p1Team" style="width: 100%; font-size: 20pt; background: white;">
+                    <option ng-repeat = "item in teams" value="{{item.id}}">{{item.team.name}}</option>
+                </select>
+            </b></td>
+            <td align="center"><input type="text"  ng-model = "p1Name" value="p1Name"> </td>
+            <td align="center"><input type="text"  ng-model = "p1Result" value="p1Result"> </td>
+            <td align="center"><input style="font-size: 20pt" type="checkbox" ng-model = "p1record" value="p1record"></td>
+
+        </tr>
+
+        <tr>
+            <td align="center" style="font-size: 20pt;"><b>2</b></td>
+            <td align="center" style="font-size: 14pt;"><b>
+                <select ng-model="p2Team" style="width: 100%; font-size: 20pt; background: white;">
+                    <option ng-repeat = "item in teams" value="{{item.id}}">{{item.team.name}}</option>
+                </select>
+            </b></td>
+            <td align="center"><input type="text"  ng-model = "p2Name" value="p2Name"> </td>
+            <td align="center"><input type="text"  ng-model = "p2Result" value="p2Result"> </td>
+            <td align="center"><input style="font-size: 20pt" type="checkbox" ng-model = "p2record" value="p2record"></td>
+
+        </tr>
+        <tr>
+            <td align="center" style="font-size: 20pt;"><b>3</b></td>
+            <td align="center" style="font-size: 14pt;"><b>
+                <select ng-model="p3Team" style="width: 100%; font-size: 20pt; background: white;">
+                    <option ng-repeat = "item in teams" value="{{item.id}}">{{item.team.name}}</option>
+                </select>
+            </b></td>
+            <td align="center"><input type="text"  ng-model = "p3Name" value="p3Name"> </td>
+            <td align="center"><input type="text"  ng-model = "p3Result" value="p3Result"> </td>
+            <td align="center"><input style="font-size: 20pt" type="checkbox" ng-model = "p3record" value="p3record"></td>
+
+        </tr>
+    </table>
+
+
+    <br><br>
+
+    <button type="submit" class="button buttonBlue" style="font-family: Futura" ng-click="saveResults()"
+            ng-disabled="pics.$invalid">Save Results and Change Event Status to 'Completed'
+        <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
+    </button>
+
+    <br><br>
+
+
+
+
+
+</form>
+</body>
+</html>
